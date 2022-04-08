@@ -1,9 +1,8 @@
 package com.example.robotricochet.windows;
 
 import com.example.robotricochet.Application;
+import com.example.robotricochet.components.Position;
 import com.example.robotricochet.entities.Entity;
-import com.example.robotricochet.managers.EntityManager;
-import com.example.robotricochet.utils.Vector2i;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -15,55 +14,29 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public abstract class Window extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
 
-    private final Class<? extends Entity>[] defaultEntities;
-    protected final Timer windowTimer = new Timer(1 / Application.REFRESH_RATE * 1000, this);
+    private final List<Entity> entities = new ArrayList<>();
+    protected final Timer windowTimer = new Timer((int) (1 / Application.REFRESH_RATE * 1000), this);
     protected final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
     protected static final Color REFRESH_COLOR = new Color(0x0E121D);
 
-    protected static final EntityManager entityManager = new EntityManager();
-
-
-    public Window(Class<? extends Entity>[] defaultEntities) {
+    public Window() {
         super();
-        this.defaultEntities = defaultEntities;
         setBackground(REFRESH_COLOR);
         setFocusable(true);
         addKeyListener(this);
         addMouseListener(this);
     }
 
-    public void load() {
-        for (Class<? extends Entity> entity : defaultEntities) {
-            try {
-                Method m = entity.getMethod("load");
-                m.invoke(null);
-            } catch (InvocationTargetException | IllegalAccessException e) {
-                logger.info("Error while loading entity " + entity.getSimpleName());
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                logger.info("No load method for entity " + entity.getSimpleName());
-            }
-        }
-
-    }
-
     public void init() {
-        for (Class<? extends Entity> entity : defaultEntities) {
-            try {
-                Entity e = entity.getConstructor(Window.class).newInstance(this);
-                System.out.println(e.getClass().getSimpleName());
-                e.init();
-                entityManager.add(e);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
-            }
+        for (Entity entity : entities) {
+            System.out.println(entity.getClass().getSimpleName());
         }
     }
 
@@ -73,7 +46,7 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
      */
     protected void checkRepaintJob() {
         boolean isRepaintNeeded = false;
-        for (Entity entity : entityManager.getAllEntities()) {
+        for (Entity entity : entities) {
             if (entity.isDirty()) {
                 isRepaintNeeded = true;
                 entity.setDirty(false);
@@ -115,11 +88,7 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
     @Override
     public void mouseClicked(MouseEvent e) {
         logger.info("Clicked: " + e.getPoint());
-        Vector2i pos = new Vector2i(e.getPoint());
-        for (Entity entity : entityManager.getEntitiesAtScreenCoords(pos)) {
-            if (entity.onClick(pos.translate(entity.getPosition().reverse())))
-                break;
-        }
+        Position pos = new Position(e.getPoint());
     }
 
     @Override
@@ -144,11 +113,11 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        Vector2i pos = new Vector2i(e.getPoint());
-        for (Entity entity : entityManager.getEntitiesAtScreenCoords(pos)) {
-            if (entity.onHover(pos.translate(entity.getPosition().reverse())))
-                break;
-        }
+        Position pos = new Position(e.getPoint());
+//        for (Entity entity : entityManager.getEntitiesAtScreenCoords(pos)) {
+//            if (entity.onHover(pos.translate(entity.getPosition().reverse())))
+//                break;
+//        }
     }
 
     @Override

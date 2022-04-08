@@ -1,31 +1,31 @@
-package com.example.robotricochet.utils;
+package com.example.robotricochet.components;
 
 public class Bounds {
 
-    public Vector2i position;
-    public Vector2i size;
+    public Position position;
+    public Position size;
 
-    public Bounds(Vector2i position, Vector2i size) {
+    public Bounds(Position position, Position size) {
         this.position = position;
         this.size = size;
     }
 
     public Bounds(int x, int y, int width, int height) {
-        this.position = new Vector2i(x, y);
-        this.size = new Vector2i(width, height);
+        this.position = new Position(x, y);
+        this.size = new Position(width, height);
     }
 
     public Bounds(Bounds bounds) {
-        this.position = new Vector2i(bounds.position);
-        this.size = new Vector2i(bounds.size);
+        this.position = new Position(bounds.position);
+        this.size = new Position(bounds.size);
     }
 
-    public Bounds(Vector2i position, int width, int height) {
-        this.position = new Vector2i(position);
-        this.size = new Vector2i(width, height);
+    public Bounds(Position position, int width, int height) {
+        this.position = new Position(position);
+        this.size = new Position(width, height);
     }
 
-    public boolean contains(Vector2i point) {
+    public boolean contains(Position point) {
         return contains(point.x, point.y);
     }
 

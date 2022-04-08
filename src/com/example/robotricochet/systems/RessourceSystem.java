@@ -1,6 +1,5 @@
-package com.example.robotricochet.managers;
+package com.example.robotricochet.systems;
 
-import com.example.robotricochet.utils.ImageUtils;
 import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
@@ -9,7 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class AssetsManager {
+public class RessourceSystem {
 
     private static final String DIRECTORY = "/img/";
 
@@ -20,7 +19,7 @@ public class AssetsManager {
         if (images.containsKey(name))
             return images.get(name);
         try {
-            images.put(name, ImageIO.read(Objects.requireNonNull(AssetsManager.class.getResourceAsStream(DIRECTORY + name))));
+            images.put(name, ImageIO.read(Objects.requireNonNull(RessourceSystem.class.getResourceAsStream(DIRECTORY + name))));
         } catch (IOException e) {
             e.printStackTrace();
         }
