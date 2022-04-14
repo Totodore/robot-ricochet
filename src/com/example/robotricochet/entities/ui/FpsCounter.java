@@ -1,53 +1,39 @@
 package com.example.robotricochet.entities.ui;
 
-import com.example.robotricochet.windows.Window;
+import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.entities.Entity;
 
-import javax.swing.Timer;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class FpsCounter extends Entity implements ActionListener, Runnable {
-    private final int REFRESH_TIME = 1000;
-    private final Timer resetTimer = new Timer(REFRESH_TIME, this);
-    private int current, last;
+public class FpsCounter extends Entity {
+    private float timer = 0;
+    private int frameCount = 0;
 
-    public static FpsCounter create() {
-        FpsCounter counter = new FpsCounter();
-        new Thread(counter).start();
-        return counter;
+    public int getFps() {
+        if (timer == 0)
+            return 0;
+        return (int) (frameCount / timer);
     }
 
     @Override
-    public void run() {
-        start();
-    }
-
-    public synchronized void start() {
-        resetTimer.start();
-        current = 0;
-        last--;
-    }
-
-    public synchronized void stop() {
-        resetTimer.stop();
-        current--;
-    }
-
-    public synchronized void tick() {
-        current++;
+    public void update(float delta) {
+        if (timer >= 1000) {
+            timer = 0;
+            frameCount = 0;
+        }
+        timer += delta;
+        frameCount++;
     }
 
     @Override
-    public synchronized void actionPerformed(final ActionEvent e) {
-        last = current;
-        current = 0;
-        setDirty(true);
+    public void draw(Graphics2D g) {
+        g.setColor(Color.WHITE);
+        g.drawString("FPS: " + getFps(), 10, 15);
     }
 
-    private synchronized int getFps() {
-        return last * 1000 / REFRESH_TIME;
+    @Override
+    public void onResize(Vector2 screenSize) {
+
     }
 }

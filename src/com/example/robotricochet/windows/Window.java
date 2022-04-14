@@ -1,65 +1,121 @@
 package com.example.robotricochet.windows;
 
 import com.example.robotricochet.Application;
-import com.example.robotricochet.components.Position;
+import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.entities.Entity;
+import com.example.robotricochet.entities.ui.FpsCounter;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 public abstract class Window extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
 
-    private final List<Entity> entities = new ArrayList<>();
-    protected final Timer windowTimer = new Timer((int) (1 / Application.REFRESH_RATE * 1000), this);
+    private final HashMap<Integer, Entity> entities = new HashMap<>();
+    private long lastFrameTime;
+
+    protected final Timer windowTimer = new Timer((int) ((1 / Application.REFRESH_RATE) * 1000), this);
     protected final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
-    protected static final Color REFRESH_COLOR = new Color(0x0E121D);
+    protected static final Color REFRESH_COLOR = new Color(0x00);
 
-    public Window() {
+    public Window(boolean showFps) {
         super();
         setBackground(REFRESH_COLOR);
         setFocusable(true);
         addKeyListener(this);
         addMouseListener(this);
+        addResizeListener();
+        if (showFps)
+            addEntity(new FpsCounter());
+    }
+
+    public Window() {
+        this(false);
     }
 
     public void init() {
-        for (Entity entity : entities) {
-            System.out.println(entity.getClass().getSimpleName());
+        for (Entity entity : entities.values()) {
+            entity.onResize(new Vector2(getWidth(), getHeight()));
         }
+        lastFrameTime = System.nanoTime() / 1000000;
+        windowTimer.start();
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        paintComponent((Graphics2D) g);
+        Toolkit.getDefaultToolkit().sync();
+    }
+
+    public void paintComponent(Graphics2D g2d) {
+        g2d.setRenderingHints(new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB));
+        // Max quality
+        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setColor(REFRESH_COLOR);
+        g2d.drawRect(0, 0, getWidth(), getHeight());
+        for (Entity entity : entities.values())
+            entity.draw(g2d);
+        lastFrameTime = System.nanoTime() / 1000000;    // in ms
     }
 
     /**
      * Need Repaint duration : 0.0034 ms
      * Repaint duration: 1.9141 ms
+     *
+     * @param delta delta time between two frames in ms
      */
-    protected void checkRepaintJob() {
-        boolean isRepaintNeeded = false;
-        for (Entity entity : entities) {
+    protected void checkRepaintJob(float delta) {
+        boolean repaint = false;
+        for (Entity entity : entities.values()) {
+            entity.update(delta);
             if (entity.isDirty()) {
-                isRepaintNeeded = true;
+                repaint = true;
                 entity.setDirty(false);
             }
         }
-        if (isRepaintNeeded) {
-            repaint();
-        }
+        if (repaint) repaint();
     }
+
+    protected void addEntity(Entity... entities) {
+        for (Entity entity : entities)
+            addEntity(entity);
+    }
+
+    protected void addEntity(Entity entity) {
+        entities.put(entity.hashCode(), entity);
+    }
+
+    protected void removeEntity(Entity entity) {
+        entities.remove(entity.hashCode());
+    }
+
+    protected void removeEntity(int id) {
+        entities.remove(id);
+    }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        checkRepaintJob();
+        checkRepaintJob((System.nanoTime() / 1000000f) - lastFrameTime);
     }
 
     @Override
@@ -88,7 +144,7 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
     @Override
     public void mouseClicked(MouseEvent e) {
         logger.info("Clicked: " + e.getPoint());
-        Position pos = new Position(e.getPoint());
+        Vector2 pos = new Vector2(e.getPoint());
     }
 
     @Override
@@ -113,7 +169,7 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        Position pos = new Position(e.getPoint());
+        Vector2 pos = new Vector2(e.getPoint());
 //        for (Entity entity : entityManager.getEntitiesAtScreenCoords(pos)) {
 //            if (entity.onHover(pos.translate(entity.getPosition().reverse())))
 //                break;
@@ -123,5 +179,33 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
     @Override
     public void mouseDragged(MouseEvent e) {
 
+    }
+
+    private void addResizeListener() {
+        addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                logger.info("Resized");
+                for (Entity entity : entities.values()) {
+                    entity.onResize(new Vector2(e.getComponent().getWidth(), e.getComponent().getHeight()));
+                    entity.setDirty(true);
+                }
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+
+            }
+        });
     }
 }

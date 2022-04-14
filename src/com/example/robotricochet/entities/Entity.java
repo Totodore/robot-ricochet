@@ -1,12 +1,13 @@
 package com.example.robotricochet.entities;
 
-import com.example.robotricochet.components.Position;
+import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.components.Bounds;
-import com.example.robotricochet.utils.MathUtils;
+import com.example.robotricochet.systems.RessourceSystem;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.awt.Graphics2D;
 import java.util.logging.Logger;
 
 @RequiredArgsConstructor
@@ -14,6 +15,7 @@ public abstract class Entity {
 
     protected final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
+    protected final RessourceSystem ressourceSystem = new RessourceSystem();
     @Getter
     @Setter
     protected Bounds bounds;
@@ -26,22 +28,24 @@ public abstract class Entity {
     @Setter
     private boolean dirty = true;
 
-    @Getter
-    private final int id;
+    public abstract void update(float delta);
+    public abstract void draw(Graphics2D g);
+    public abstract void onResize(Vector2 screenSize);
 
-    public Entity() {
-        id = MathUtils.generateId();
-    }
-    public boolean onClick(Position position) {
+    public boolean onClick(Vector2 position) {
         return false;
     }
-    public boolean onHover(Position position) {
+    public boolean onHover(Vector2 position) {
         return false;
     }
-    public boolean onEnter(Position position) {
+    public boolean onEnter(Vector2 position) {
         return false;
     }
-    public boolean onLeave(Position position) {
+    public boolean onLeave(Vector2 position) {
         return false;
+    }
+
+    public Vector2 getPosition() {
+        return bounds.getPosition();
     }
 }
