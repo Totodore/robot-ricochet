@@ -29,13 +29,13 @@ public class Application extends JFrame {
         app.setVisible(true);
         app.setLocationRelativeTo(null);
         app.window = new GameWindow();
-        app.add(app.window);
 
         // Window entity configuration
         app.window.setSize(app.getWidth(), app.getHeight());
         app.window.setPreferredSize(app.window.getSize());
         app.window.init();
         app.window.setVisible(true);
+        app.add(app.window);
 
         logger.info("Starting game");
     }

@@ -4,6 +4,7 @@ import com.example.robotricochet.Application;
 import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.entities.Entity;
 import com.example.robotricochet.entities.ui.FpsCounter;
+import com.example.robotricochet.systems.EntitySystem;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -26,9 +27,8 @@ import java.util.logging.Logger;
 
 public abstract class Window extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
 
-    private final HashMap<Integer, Entity> entities = new HashMap<>();
     private long lastFrameTime;
-
+    protected final EntitySystem entitySystem = new EntitySystem();
     protected final Timer windowTimer = new Timer((int) ((1 / Application.REFRESH_RATE) * 1000), this);
     protected final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
@@ -42,7 +42,7 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
         addMouseListener(this);
         addResizeListener();
         if (showFps)
-            addEntity(new FpsCounter());
+            entitySystem.add(new FpsCounter());
     }
 
     public Window() {
@@ -50,8 +50,10 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
     }
 
     public void init() {
-        for (Entity entity : entities.values()) {
+        for (Entity entity : entitySystem.getAllEntities()) {
+            entity.init();
             entity.onResize(new Vector2(getWidth(), getHeight()));
+            logger.info("Entity " + entity.getClass().getSimpleName() + " initialized");
         }
         lastFrameTime = System.nanoTime() / 1000000;
         windowTimer.start();
@@ -72,7 +74,7 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setColor(REFRESH_COLOR);
         g2d.drawRect(0, 0, getWidth(), getHeight());
-        for (Entity entity : entities.values())
+        for (Entity entity : entitySystem.getAllEntities())
             entity.draw(g2d);
         lastFrameTime = System.nanoTime() / 1000000;    // in ms
     }
@@ -85,7 +87,7 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
      */
     protected void checkRepaintJob(float delta) {
         boolean repaint = false;
-        for (Entity entity : entities.values()) {
+        for (Entity entity : entitySystem.getAllEntities()) {
             entity.update(delta);
             if (entity.isDirty()) {
                 repaint = true;
@@ -93,23 +95,6 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
             }
         }
         if (repaint) repaint();
-    }
-
-    protected void addEntity(Entity... entities) {
-        for (Entity entity : entities)
-            addEntity(entity);
-    }
-
-    protected void addEntity(Entity entity) {
-        entities.put(entity.hashCode(), entity);
-    }
-
-    protected void removeEntity(Entity entity) {
-        entities.remove(entity.hashCode());
-    }
-
-    protected void removeEntity(int id) {
-        entities.remove(id);
     }
 
 
@@ -126,9 +111,9 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
     @Override
     public void keyPressed(KeyEvent e) {
         System.out.println("Key pressed");
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_ESCAPE -> System.exit(0);
-        }
+//        switch (e.getKeyCode()) {
+//            case KeyEvent.VK_ESCAPE -> System.exit(0);
+//        }
     }
 
     @Override
@@ -170,10 +155,10 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
     @Override
     public void mouseMoved(MouseEvent e) {
         Vector2 pos = new Vector2(e.getPoint());
-//        for (Entity entity : entityManager.getEntitiesAtScreenCoords(pos)) {
-//            if (entity.onHover(pos.translate(entity.getPosition().reverse())))
-//                break;
-//        }
+        for (Entity entity : entitySystem.getEntitiesAtScreenCoords(pos)) {
+            if (entity.onHover(pos.translate(entity.getPosition().reverse())))
+                break;
+        }
     }
 
     @Override
@@ -186,7 +171,7 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
             @Override
             public void componentResized(ComponentEvent e) {
                 logger.info("Resized");
-                for (Entity entity : entities.values()) {
+                for (Entity entity : entitySystem.getAllEntities()) {
                     entity.onResize(new Vector2(e.getComponent().getWidth(), e.getComponent().getHeight()));
                     entity.setDirty(true);
                 }

@@ -17,19 +17,24 @@ public class FpsCounter extends Entity {
     }
 
     @Override
+    public void init() {
+
+    }
+
+    @Override
     public void update(float delta) {
         if (timer >= 1000) {
             timer = 0;
             frameCount = 0;
         }
         timer += delta;
-        frameCount++;
     }
 
     @Override
     public void draw(Graphics2D g) {
         g.setColor(Color.WHITE);
         g.drawString("FPS: " + getFps(), 10, 15);
+        frameCount++;
     }
 
     @Override

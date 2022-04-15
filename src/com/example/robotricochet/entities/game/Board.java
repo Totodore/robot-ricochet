@@ -12,9 +12,10 @@ public class Board extends Entity {
 
     public int cellSize;
 
-    public Board() {
-    }
+    @Override
+    public void init() {
 
+    }
 
     @Override
     public void update(float delta) {
@@ -24,7 +25,6 @@ public class Board extends Entity {
     @Override
     public void draw(Graphics2D g) {
         g.setColor(new Color(0x252525));    // Border color
-        logger.info("Drawing board");
         // Drawing the cells with border radius for the corners
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
