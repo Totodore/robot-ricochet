@@ -40,7 +40,7 @@ public class PickedCard extends Entity {
     @Override
     public void onResize(Vector2 screenSize) {
         setBounds(new Bounds(
-                board.getPosition().translate(board.getSize().scale(0.5f).translate(-(board.cellSize * 2) / 2)),
+                board.getPosition().translate(board.getSize().scale(0.5f).translate(-board.cellSize )),
                 new Vector2(board.cellSize).scale(2)));
     }
 
