@@ -3,7 +3,7 @@ package com.example.robotricochet.entities;
 import com.example.robotricochet.components.Bounds;
 import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.systems.EntitySystem;
-import com.example.robotricochet.systems.RessourceSystem;
+import com.example.robotricochet.systems.ResourceSystem;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +14,7 @@ public abstract class Entity {
 
     protected final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
-    protected final RessourceSystem ressourceSystem = new RessourceSystem();
+    protected final ResourceSystem resourceSystem = new ResourceSystem();
 
     @Setter
     protected EntitySystem entitySystem;
@@ -57,5 +57,8 @@ public abstract class Entity {
 
     public Vector2 getPosition() {
         return bounds.getPosition();
+    }
+    public Vector2 getSize() {
+        return bounds.getSize();
     }
 }

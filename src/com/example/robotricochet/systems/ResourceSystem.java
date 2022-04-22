@@ -3,7 +3,6 @@ package com.example.robotricochet.systems;
 import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
-import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -13,23 +12,23 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public class RessourceSystem {
+public class ResourceSystem {
 
     private static final String DIRECTORY = "/img/";
 
     private static final HashMap<String, BufferedImage> images = new HashMap<>();
-    private final Logger logger = Logger.getLogger(RessourceSystem.class.getName());
+    private final Logger logger = Logger.getLogger(ResourceSystem.class.getName());
 
-    public Image getImageAsset(String name) {
+    public BufferedImage getImageAsset(String name) {
         return getImageAsset(name, -1, -1);
     }
 
-    public Image getImageAsset(String name, int width, int height) {
+    public BufferedImage getImageAsset(String name, float width, float height) {
         return getImageAsset(name, width, height, 0);
     }
 
     @Nullable
-    public Image getImageAsset(String name, int width, int height, int rotation) {
+    public BufferedImage getImageAsset(String name, float width, float height, float rotation) {
         String key = name + "-" + width + "x" + height + "-" + rotation;
         if (images.containsKey(key))
             return images.get(key);
@@ -82,7 +81,7 @@ public class RessourceSystem {
             final int currentH = (int) Math.floor(originalHeight * cos + originalWidth * sin);
             at.translate(currentW / 2f, currentH / 2f);
             at.rotate(rads, 0, 0);
-            at.translate(- originalWidth / 2f, - originalHeight / 2f);
+            at.translate(-originalWidth / 2f, -originalHeight / 2f);
         }
 
         // Transformation

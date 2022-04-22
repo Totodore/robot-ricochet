@@ -3,7 +3,6 @@ package com.example.robotricochet.windows;
 import com.example.robotricochet.Application;
 import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.entities.Entity;
-import com.example.robotricochet.entities.ui.FpsCounter;
 import com.example.robotricochet.systems.EntitySystem;
 
 import javax.swing.JPanel;
@@ -22,7 +21,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.HashMap;
 import java.util.logging.Logger;
 
 public abstract class Window extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
@@ -38,11 +36,8 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
         super();
         setBackground(REFRESH_COLOR);
         setFocusable(true);
-        addKeyListener(this);
-        addMouseListener(this);
-        addResizeListener();
-        if (showFps)
-            entitySystem.add(new FpsCounter());
+//        if (showFps)
+//            entitySystem.add(new FpsCounter());
     }
 
     public Window() {
@@ -57,6 +52,9 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
         }
         lastFrameTime = System.nanoTime() / 1000000;
         windowTimer.start();
+        addKeyListener(this);
+        addMouseListener(this);
+        addResizeListener();
     }
 
     @Override
@@ -170,7 +168,7 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
         addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
-                logger.info("Resized");
+                logger.info("Window Resized");
                 for (Entity entity : entitySystem.getAllEntities()) {
                     entity.onResize(new Vector2(e.getComponent().getWidth(), e.getComponent().getHeight()));
                     entity.setDirty(true);

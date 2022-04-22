@@ -13,6 +13,11 @@ public class Vector2 {
         this.y = y;
     }
 
+    public Vector2(int d) {
+        this.x = d;
+        this.y = d;
+    }
+
     public Vector2(Vector2 v) {
         this.x = v.x;
         this.y = v.y;
@@ -34,30 +39,56 @@ public class Vector2 {
         v2.y += v.y;
         return v2;
     }
+
     public Vector2 translate(int x, int y) {
         return this.translate(new Vector2(x, y));
     }
+
     public Vector2 translate(int s) {
         return this.translate(s, s);
     }
+
     public Vector2 reverse() {
         Vector2 v = new Vector2(this);
         v.x = -this.x;
         v.y = -this.y;
         return v;
     }
-    public Vector2 scale(int s) {
+
+    public Vector2 scale(float s) {
         Vector2 v = new Vector2(this);
         v.x *= s;
         v.y *= s;
         return v;
     }
-    public Vector2 scale(int x, int y) {
+
+    public Vector2 scale(float x, float y) {
         Vector2 v = new Vector2(this);
         v.x *= x;
         v.y *= y;
         return v;
     }
+
+    public Vector2 clamp(Vector2 point) {
+        return clamp(point.x, point.y);
+    }
+
+    public Vector2 clamp(int x, int y) {
+        Vector2 v = new Vector2(this);
+        if (v.x < x) v.x = x;
+        if (v.y < y) v.y = y;
+        if (v.x > x) v.x = x;
+        if (v.y > y) v.y = y;
+        return v;
+    }
+
+    public Vector2 normalize() {
+        Vector2 v = new Vector2(this);
+        v.x = (int) Math.signum(v.x);
+        v.y = (int) Math.signum(v.y);
+        return v;
+    }
+
     public Vector2 scale(Vector2 v) {
         return this.scale(v.x, v.y);
     }

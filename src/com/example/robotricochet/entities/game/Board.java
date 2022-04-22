@@ -39,12 +39,13 @@ public class Board extends Entity {
 
     @Override
     public void onResize(Vector2 screenSize) {
-        cellSize = (int) ((screenSize.y - (screenSize.y * 0.045) * 2) / 16);
-        setBounds(new Bounds(48, (int) (screenSize.y * 0.045), cellSize * 16, cellSize * 16));
-        ressourceSystem.removeSizedImageAsset("tiles/tile.png");
+        logger.info("Resizing board");
+        cellSize = (int) ((screenSize.y * 0.94) / 16);
+        setBounds(new Bounds(48, (int) (screenSize.y * 0.03), cellSize * 16, cellSize * 16));
+        resourceSystem.removeSizedImageAsset("tiles/tile.png");
     }
 
     private Image getTile(int s) {
-        return ressourceSystem.getImageAsset("tiles/tile.png", s, s);
+        return resourceSystem.getImageAsset("tiles/tile.png", s, s);
     }
 }

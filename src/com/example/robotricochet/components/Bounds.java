@@ -1,5 +1,7 @@
 package com.example.robotricochet.components;
 
+import java.awt.geom.Rectangle2D;
+
 public class Bounds {
 
     public Vector2 position;
@@ -38,6 +40,10 @@ public class Bounds {
     }
     public Vector2 getSize() {
         return new Vector2(size);
+    }
+
+    public Rectangle2D toRect() {
+        return new Rectangle2D.Float(position.x, position.y, size.x, size.y);
     }
 
     @Override

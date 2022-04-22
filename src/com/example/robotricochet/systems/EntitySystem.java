@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class EntitySystem {
@@ -47,16 +48,29 @@ public class EntitySystem {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Entity> Optional<T> find(Class<T> clazz) {
+    public <T> Optional<T> find(Class<T> clazz) {
         return (Optional<T>) entities.values().stream()
-                .filter(entity -> entity.getClass().equals(clazz))
+                .filter(entity -> clazz.isAssignableFrom(entity.getClass()))
+                .findFirst();
+    }
+    @SuppressWarnings("unchecked")
+    public <T> Optional<T> findWhere(Class<T> clazz, Function<T, Boolean> predicate) {
+        return (Optional<T>) entities.values().stream()
+                .filter(entity -> clazz.isAssignableFrom(entity.getClass()) && predicate.apply((T) entity))
                 .findFirst();
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Entity> List<T> findMany(Class<T> clazz) {
+    public <T> List<T> findMany(Class<T> clazz) {
         return entities.values().stream()
-                .filter(entity -> entity.getClass().equals(clazz))
+                .filter(entity -> clazz.isAssignableFrom(entity.getClass()))
+                .map(entity -> (T) entity)
+                .collect(Collectors.toList());
+    }
+    @SuppressWarnings("unchecked")
+    public <T> List<T> findManyWhere(Class<T> clazz, Function<T, Boolean> predicate) {
+        return entities.values().stream()
+                .filter(entity -> clazz.isAssignableFrom(entity.getClass()) && predicate.apply((T) entity))
                 .map(entity -> (T) entity)
                 .collect(Collectors.toList());
     }

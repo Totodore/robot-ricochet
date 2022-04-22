@@ -10,7 +10,7 @@ import lombok.Setter;
 import java.awt.Graphics2D;
 import java.awt.Image;
 
-public class Wall extends Entity {
+public class Wall extends Entity implements BoardObject {
 
     @Setter
     @Getter
@@ -18,12 +18,12 @@ public class Wall extends Entity {
 
     @Getter
     @Setter
-    private Vector2 position;
+    private Vector2 boardPosition;
 
     private Board board;
 
     public Wall(Vector2 position, Direction direction) {
-        this.position = position;
+        this.boardPosition = position;
         this.direction = direction;
     }
 
@@ -39,19 +39,21 @@ public class Wall extends Entity {
 
     @Override
     public void draw(Graphics2D g) {
-        g.drawImage(getTile(board.cellSize), getBounds().getPosition().x, getBounds().getPosition().y, null);
+        g.drawImage(getTile(board.cellSize), getPosition().x, getPosition().y, null);
     }
 
     @Override
     public void onResize(Vector2 screenSize) {
         setBounds(new Bounds(
-                board.getPosition().translate(position.scale(board.cellSize)),                          // Position relative to the board
+                board.getPosition()
+                        .translate(boardPosition.scale(board.cellSize))
+                        .translate(direction == Direction.Vertical ? board.cellSize : 0, direction == Direction.Horizontal ? board.cellSize : 0),                          // Position relative to the board
                 direction == Direction.Horizontal ? board.cellSize : (int) (board.cellSize * 0.3),      // Width
                 direction == Direction.Vertical ? board.cellSize : (int) (board.cellSize * 0.3)));     // Height
-        ressourceSystem.removeSizedImageAsset("tiles/tile.png");
+        resourceSystem.removeSizedImageAsset("tiles/tile.png");
     }
 
     private Image getTile(int s) {
-        return ressourceSystem.getImageAsset("tiles/wall.png", s, -1, direction == Direction.Vertical ? 90 : 0);
+        return resourceSystem.getImageAsset("tiles/wall.png", s, board.cellSize * 0.1f, direction == Direction.Vertical ? 90 : 0);
     }
 }
