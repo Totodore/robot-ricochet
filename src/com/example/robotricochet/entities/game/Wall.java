@@ -33,7 +33,7 @@ public class Wall extends Entity implements BoardObject {
     }
 
     @Override
-    public void update(float delta) {
+    public void update(double delta) {
 
     }
 

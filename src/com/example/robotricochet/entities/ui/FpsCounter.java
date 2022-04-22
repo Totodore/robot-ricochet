@@ -7,14 +7,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 public class FpsCounter extends Entity {
-    private float timer = 0;
     private int frameCount = 0;
-
-    public int getFps() {
-        if (timer == 0)
-            return 0;
-        return (int) (frameCount / timer);
-    }
+    private double dt = 0.0;
+    private double fps = 0.0;
 
     @Override
     public void init() {
@@ -22,19 +17,22 @@ public class FpsCounter extends Entity {
     }
 
     @Override
-    public void update(float delta) {
-        if (timer >= 1000) {
-            timer = 0;
+    public void update(double delta) {
+        frameCount++;
+        dt += delta / 1000;
+        float updateRate = 4.0f;
+        if (dt > 1.0 / updateRate) {
+            fps = frameCount / dt;
             frameCount = 0;
+            dt -= 1.0 / updateRate;
         }
-        timer += delta;
+        setDirty(true);
     }
 
     @Override
     public void draw(Graphics2D g) {
         g.setColor(Color.WHITE);
-        g.drawString("FPS: " + getFps(), 10, 15);
-        frameCount++;
+        g.drawString("FPS: " + fps, 10, 15);
     }
 
     @Override

@@ -69,16 +69,12 @@ public class Vector2 {
         return v;
     }
 
-    public Vector2 clamp(Vector2 point) {
-        return clamp(point.x, point.y);
-    }
-
-    public Vector2 clamp(int x, int y) {
+    public Vector2 clamp(Vector2 point, Vector2 direction) {
         Vector2 v = new Vector2(this);
-        if (v.x < x) v.x = x;
-        if (v.y < y) v.y = y;
-        if (v.x > x) v.x = x;
-        if (v.y > y) v.y = y;
+        if (v.x < point.x && direction.x == -1) v.x = point.x;
+        if (v.y < point.y && direction.y == -1) v.y = point.y;
+        if (v.x > point.x && direction.x == 1) v.x = point.x;
+        if (v.y > point.y && direction.y == 1) v.y = point.y;
         return v;
     }
 

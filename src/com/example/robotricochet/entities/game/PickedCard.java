@@ -26,7 +26,7 @@ public class PickedCard extends Entity {
     }
 
     @Override
-    public void update(float delta) {
+    public void update(double delta) {
 
     }
 

@@ -1,8 +1,8 @@
 package com.example.robotricochet.windows;
 
-import com.example.robotricochet.Application;
 import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.entities.Entity;
+import com.example.robotricochet.entities.ui.FpsCounter;
 import com.example.robotricochet.systems.EntitySystem;
 
 import javax.swing.JPanel;
@@ -27,7 +27,7 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
 
     private long lastFrameTime;
     protected final EntitySystem entitySystem = new EntitySystem();
-    protected final Timer windowTimer = new Timer((int) ((1 / Application.REFRESH_RATE) * 1000), this);
+    protected final Timer windowTimer = new Timer(0, this);
     protected final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
     protected static final Color REFRESH_COLOR = new Color(0x00);
@@ -36,8 +36,8 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
         super();
         setBackground(REFRESH_COLOR);
         setFocusable(true);
-//        if (showFps)
-//            entitySystem.add(new FpsCounter());
+        if (showFps)
+            entitySystem.add(new FpsCounter());
     }
 
     public Window() {
@@ -83,7 +83,7 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
      *
      * @param delta delta time between two frames in ms
      */
-    protected void checkRepaintJob(float delta) {
+    protected void checkRepaintJob(double delta) {
         boolean repaint = false;
         for (Entity entity : entitySystem.getAllEntities()) {
             entity.update(delta);
@@ -98,7 +98,7 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        checkRepaintJob((System.nanoTime() / 1000000f) - lastFrameTime);
+        checkRepaintJob((System.nanoTime() / 1000000d) - lastFrameTime);
     }
 
     @Override
