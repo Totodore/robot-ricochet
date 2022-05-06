@@ -23,7 +23,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.logging.Logger;
 
-public abstract class Window extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
+public abstract class Window extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
 
     private long lastFrameTime;
     protected final EntitySystem entitySystem = new EntitySystem();
@@ -52,7 +52,6 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
         }
         lastFrameTime = System.nanoTime() / 1000000;
         windowTimer.start();
-        addKeyListener(this);
         addMouseListener(this);
         addResizeListener();
     }
@@ -99,25 +98,6 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
     @Override
     public void actionPerformed(ActionEvent e) {
         checkRepaintJob((System.nanoTime() / 1000000f) - lastFrameTime);
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        System.out.println("Key pressed");
-//        switch (e.getKeyCode()) {
-//            case KeyEvent.VK_ESCAPE -> System.exit(0);
-//        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        System.out.println("Key pressed");
-
     }
 
     /**
