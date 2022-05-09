@@ -6,6 +6,7 @@ import com.example.robotricochet.components.RobotColor;
 import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.entities.Entity;
 
+import javax.swing.JTextField;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -32,6 +33,7 @@ public class PickedCard extends Entity {
 
     @Override
     public void draw(Graphics2D g) {
+        new JTextField().paint(g);
 //        g.setPaint(new TexturePaint(getCard(board.cellSize), new Rectangle2D.Float(0, 0, board.cellSize, board.cellSize)));
 //        g.fillRect(bounds.getPosition().x, bounds.getPosition().y, bounds.getSize().x, bounds.getSize().y);
         g.drawImage(getCard(bounds.getSize().x), bounds.getPosition().x, bounds.getPosition().y, null);

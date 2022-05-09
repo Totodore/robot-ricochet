@@ -6,6 +6,7 @@ import com.example.robotricochet.entities.ui.FpsCounter;
 import com.example.robotricochet.systems.EntitySystem;
 
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.Timer;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -50,7 +51,7 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
             entity.onResize(new Vector2(getWidth(), getHeight()));
             logger.info("Entity " + entity.getClass().getSimpleName() + " initialized");
         }
-        lastFrameTime = System.nanoTime() / 1000000;
+        lastFrameTime = System.nanoTime();
         windowTimer.start();
         addKeyListener(this);
         addMouseListener(this);
@@ -74,7 +75,7 @@ public abstract class Window extends JPanel implements ActionListener, KeyListen
         g2d.drawRect(0, 0, getWidth(), getHeight());
         for (Entity entity : entitySystem.getAllEntities())
             entity.draw(g2d);
-        lastFrameTime = System.nanoTime() / 1000000;    // in ms
+        lastFrameTime = System.nanoTime();    // in ms
     }
 
     /**
