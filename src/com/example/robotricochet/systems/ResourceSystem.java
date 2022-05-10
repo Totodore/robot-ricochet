@@ -72,6 +72,9 @@ public class ResourceSystem {
         }
         at.scale(scaleX, scaleY);
 
+        originalHeight *= scaleY;
+        originalWidth *= scaleX;
+
         // Rotation
         if (angle != 0) {
             final double rads = Math.toRadians(angle);

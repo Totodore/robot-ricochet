@@ -3,6 +3,7 @@ package com.example.robotricochet.entities;
 import com.example.robotricochet.components.Bounds;
 import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.systems.EntitySystem;
+import com.example.robotricochet.systems.GameSystem;
 import com.example.robotricochet.systems.ResourceSystem;
 import com.example.robotricochet.windows.Window;
 import lombok.Getter;
@@ -22,6 +23,9 @@ public abstract class Entity {
 
     @Setter
     protected EntitySystem entitySystem;
+
+    @Setter
+    protected GameSystem gameSystem;
 
     @Getter
     @Setter

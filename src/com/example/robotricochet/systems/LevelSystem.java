@@ -1,5 +1,6 @@
 package com.example.robotricochet.systems;
 
+import com.example.robotricochet.components.Bounds;
 import com.example.robotricochet.components.Vector2;
 import lombok.Getter;
 
@@ -16,25 +17,67 @@ public class LevelSystem {
     private final List<Vector2> verticalWalls = new ArrayList<>();
     @Getter
     private final List<Vector2> horizontalWalls = new ArrayList<>();
+    @Getter
+    private final List<Vector2> cardPositions = new ArrayList<>();
 
     public void loadLevel(int level) {
         try {
             final byte[] data = Objects.requireNonNull(getClass().getResourceAsStream(DIRECTORY + "level" + level + ".rr")).readAllBytes();
-            boolean isVertical = false;
+            int state = 0;
             for (int i = 0; i < data.length; i++) {
-                if (data[i] == 0x00 && data[i + 1] == 0x00 && !isVertical)
-                    isVertical = true;
+                if (data[i] == 0x00 && data[i + 1] == 0x00)
+                    state++;
                 if (data[i] == 0x00)   // We skip separators but this assume that a wall at 0,0 cannot exist
                     continue;
                 int x = (data[i] & 0xFF) >> 4;          // The first 4 bytes are the x coordinate
                 int y = (data[i] & 0xFF) & 0x0F;        // The last 4 bytes are the y coordinate
-                if (isVertical)
+                if (state == 0)
+                    horizontalWalls.add(new Vector2(x, y));
+                else if (state == 1)
                     verticalWalls.add(new Vector2(x, y));
                 else
-                    horizontalWalls.add(new Vector2(x, y));
+                    cardPositions.add(new Vector2(x, y));
+            }
+            for (int i = 0; i < 16; i++) {
+                verticalWalls.add(new Vector2(-1, i));
+                verticalWalls.add(new Vector2(15, i));
+                horizontalWalls.add(new Vector2(i, -1));
+                horizontalWalls.add(new Vector2(i, 15));
+            }
+            for (int i = 7; i < 9; i++) {
+                verticalWalls.add(new Vector2(6, i));
+                verticalWalls.add(new Vector2(8, i));
+                horizontalWalls.add(new Vector2(i, 6));
+                horizontalWalls.add(new Vector2(i, 8));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Check if there is a wall near this position (1 tile away)
+     *
+     * @param position The position to check
+     */
+    public boolean hasWallNear(Vector2 position) {
+        Bounds bound = new Bounds(position.x - 1, position.y - 1, 2, 2);
+        for (Vector2 wall : verticalWalls) {
+            if (bound.contains(wall))
+                return true;
+        }
+        for (Vector2 wall : horizontalWalls) {
+            if (bound.contains(wall))
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Return all the wall corners of the board
+     */
+    public Vector2[] getCorners() {
+        Vector2[] corners = new Vector2[16];
+        return new Vector2[]{};
     }
 }

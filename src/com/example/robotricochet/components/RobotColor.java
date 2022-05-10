@@ -8,8 +8,7 @@ public enum RobotColor {
     Red(new Color(0xFF0000)),
     Green(new Color(0x0000FF)),
     Blue(new Color(0xBA4AE1)),
-    Silver(new Color(0xB2ACAC)),
-    Yellow(new Color(0xFFD600));
+    Silver(new Color(0xB2ACAC));
 
     @Getter
     private final Color color;

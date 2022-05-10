@@ -8,9 +8,10 @@ import com.example.robotricochet.entities.game.Wall;
 public class GameSystem {
 
     private final EntitySystem entitySystem;
-
-    public GameSystem(EntitySystem entitySystem) {
+    private final LevelSystem levelSystem;
+    public GameSystem(EntitySystem entitySystem, LevelSystem levelSystem) {
         this.entitySystem = entitySystem;
+        this.levelSystem = levelSystem;
     }
 
     public boolean isRobotHit(Vector2 position, Direction direction) {

@@ -26,7 +26,7 @@ public class Robot extends Entity implements BoardObject {
 
     private Board board;
 
-    private final static float SPEED = 0.08f;   // pixels/ms
+    private final static float SPEED = 0.09f;   // pixels/ms
 
     public Robot(RobotColor color, Vector2 position) {
         this.color = color;
@@ -36,7 +36,6 @@ public class Robot extends Entity implements BoardObject {
     @Override
     public void init() {
         board = entitySystem.find(Board.class).orElseThrow();
-        setBoardDestination(new Vector2(0, 0));
     }
 
     @Override
@@ -67,6 +66,15 @@ public class Robot extends Entity implements BoardObject {
                 board.getPosition().translate(boardPosition.scale(board.cellSize)),
                 board.cellSize, board.cellSize
         ));
+        resourceSystem.removeSizedImageAsset("robots/" + color.toString() + "-robot.png");
+    }
+
+    @Override
+    public boolean onClick(Vector2 position) {
+        logger.info("Click on robot");
+
+//        if (position.)
+        return false;
     }
 
     public boolean isMoving() {

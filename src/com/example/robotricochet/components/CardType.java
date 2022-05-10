@@ -5,7 +5,6 @@ public enum CardType {
     Gear,
     Moon,
     Planet;
-
     @Override
     public String toString() {
         return super.toString().toLowerCase();

@@ -46,6 +46,7 @@ public abstract class Window extends JPanel implements ActionListener, MouseList
     public void init() {
         for (Entity entity : entitySystem.getAllEntities()) {
             entity.setWindow(this);
+            entity.setEntitySystem(entitySystem);
             entity.init();
             entity.onResize(new Vector2(getWidth(), getHeight()));
             logger.info("Entity " + entity.getClass().getSimpleName() + " initialized");
@@ -59,10 +60,10 @@ public abstract class Window extends JPanel implements ActionListener, MouseList
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        paintComponent((Graphics2D) g);
-        Toolkit.getDefaultToolkit().sync();
         delta = (System.nanoTime() - lastFrameTime) / 1000000f;
         lastFrameTime = System.nanoTime();    // in ms
+        paintComponent((Graphics2D) g);
+        Toolkit.getDefaultToolkit().sync();
     }
 
     public void paintComponent(Graphics2D g2d) {
@@ -107,8 +108,8 @@ public abstract class Window extends JPanel implements ActionListener, MouseList
      */
     @Override
     public void mouseClicked(MouseEvent e) {
-        logger.info("Clicked: " + e.getPoint());
         Vector2 pos = new Vector2(e.getPoint());
+        entitySystem.findUnderPoint(pos).forEach(entity -> entity.onClick(pos));
     }
 
     @Override

@@ -47,13 +47,16 @@ public class Wall extends Entity implements BoardObject {
         setBounds(new Bounds(
                 board.getPosition()
                         .translate(boardPosition.scale(board.cellSize))
-                        .translate(direction == Direction.Vertical ? board.cellSize : 0, direction == Direction.Horizontal ? board.cellSize : 0),                          // Position relative to the board
-                direction == Direction.Horizontal ? board.cellSize : (int) (board.cellSize * 0.3),      // Width
-                direction == Direction.Vertical ? board.cellSize : (int) (board.cellSize * 0.3)));     // Height
-        resourceSystem.removeSizedImageAsset("tiles/tile.png");
+                        .translate(direction == Direction.Vertical ? board.cellSize - 2 : 0, direction == Direction.Horizontal ? board.cellSize - 2 : 0),                          // Position relative to the board
+                direction == Direction.Vertical ? board.cellSize : (int) (board.cellSize * 0.1),      // Width
+                direction == Direction.Horizontal ? board.cellSize : (int) (board.cellSize * 0.1)));     // Height
+        resourceSystem.removeSizedImageAsset("tiles/wall.png");
     }
 
     private Image getTile(int s) {
-        return resourceSystem.getImageAsset("tiles/wall.png", s, board.cellSize * 0.1f, direction == Direction.Vertical ? 90 : 0);
+        if (direction == Direction.Horizontal)
+            return resourceSystem.getImageAsset("tiles/wall.png", s, s * 0.1f, 0);
+        else
+            return resourceSystem.getImageAsset("tiles/wall.png", s, s, 90);
     }
 }

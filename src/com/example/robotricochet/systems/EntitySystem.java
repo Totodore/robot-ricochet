@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EntitySystem {
     private final LinkedHashMap<Integer, Entity> entities = new LinkedHashMap<>();
@@ -53,6 +54,7 @@ public class EntitySystem {
                 .filter(entity -> clazz.isAssignableFrom(entity.getClass()))
                 .findFirst();
     }
+
     @SuppressWarnings("unchecked")
     public <T> Optional<T> findWhere(Class<T> clazz, Function<T, Boolean> predicate) {
         return (Optional<T>) entities.values().stream()
@@ -67,12 +69,39 @@ public class EntitySystem {
                 .map(entity -> (T) entity)
                 .collect(Collectors.toList());
     }
+
     @SuppressWarnings("unchecked")
     public <T> List<T> findManyWhere(Class<T> clazz, Function<T, Boolean> predicate) {
         return entities.values().stream()
                 .filter(entity -> clazz.isAssignableFrom(entity.getClass()) && predicate.apply((T) entity))
                 .map(entity -> (T) entity)
                 .collect(Collectors.toList());
+    }
+
+    public <T> void remove(Class<T> clazz) {
+        find(clazz).ifPresent(entity -> remove((Entity) entity));
+    }
+
+    public <T> void removeWhere(Class<T> clazz, Function<T, Boolean> predicate) {
+        findWhere(clazz, predicate).ifPresent(entity -> remove((Entity) entity));
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> void removeMany(Class<T> clazz) {
+        for(Entity e : (List<Entity>) findMany(clazz)) {
+            remove(e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> void removeManyWhere(Class<T> clazz, Function<T, Boolean> predicate) {
+        for (Entity e : (List<Entity>) findManyWhere(clazz, predicate)) {
+            remove(e);
+        }
+    }
+
+    public Stream<Entity> findUnderPoint(Vector2 position) {
+        return entities.values().stream().filter(entity -> entity.getBounds().contains(position));
     }
 
 
