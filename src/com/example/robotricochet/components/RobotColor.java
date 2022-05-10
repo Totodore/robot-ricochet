@@ -18,6 +18,10 @@ public enum RobotColor {
         this.color = color;
     }
 
+    public Color getTransparentColor() {
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), 0x50);
+    }
+
     @Override
     public String toString() {
         return super.toString().toLowerCase();

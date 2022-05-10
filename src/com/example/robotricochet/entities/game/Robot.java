@@ -13,6 +13,7 @@ import java.awt.Image;
 public class Robot extends Entity implements BoardObject {
 
 
+    @Getter
     private final RobotColor color;
 
     @Getter

@@ -1,8 +1,11 @@
 package com.example.robotricochet.entities.game;
 
 import com.example.robotricochet.components.Bounds;
+import com.example.robotricochet.components.Move;
 import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.entities.Entity;
+import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -11,6 +14,10 @@ import java.awt.Image;
 public class Board extends Entity {
 
     public int cellSize;
+
+    @Nullable
+    @Getter
+    private Move[] moves;
 
     @Override
     public void init() {
@@ -35,6 +42,19 @@ public class Board extends Entity {
                 g.drawLine(x, y, x, y + cellSize);
             }
         }
+        if (moves != null && moves.length > 0) {
+            for (Move move : moves) {
+                if (move == null)
+                    continue;
+                g.setColor(move.getRobot().getColor().getTransparentColor());
+                Vector2 realOrigin = move.getOrigin().scale(cellSize).translate(getPosition());
+                Vector2 realDestination = move.getDestination().scale(cellSize).translate(getPosition());
+                if (move.getDestination().y == move.getOrigin().y)
+                    g.fillRect(realOrigin.x, realOrigin.y, realDestination.x - realOrigin.x, cellSize);
+                else
+                    g.fillRect(realOrigin.x, realOrigin.y, cellSize, realDestination.y - realOrigin.y);
+            }
+        }
     }
 
     @Override
@@ -43,6 +63,11 @@ public class Board extends Entity {
         cellSize = (int) ((screenSize.y * 0.94) / 16);
         setBounds(new Bounds(48, (int) (screenSize.y * 0.03), cellSize * 16, cellSize * 16));
         resourceSystem.removeSizedImageAsset("tiles/tile.png");
+    }
+
+    public void setMoves(Move[] moves) {
+        this.moves = moves;
+        setDirty(true);
     }
 
     private Image getTile(int s) {
