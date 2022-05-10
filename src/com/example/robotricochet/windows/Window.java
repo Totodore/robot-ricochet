@@ -6,7 +6,6 @@ import com.example.robotricochet.entities.ui.FpsCounter;
 import com.example.robotricochet.systems.EntitySystem;
 
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.Timer;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -17,8 +16,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -27,6 +24,7 @@ import java.util.logging.Logger;
 public abstract class Window extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
 
     private long lastFrameTime;
+    private float delta;
     protected final EntitySystem entitySystem = new EntitySystem();
     protected final Timer windowTimer = new Timer(0, this);
     protected final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
@@ -47,11 +45,12 @@ public abstract class Window extends JPanel implements ActionListener, MouseList
 
     public void init() {
         for (Entity entity : entitySystem.getAllEntities()) {
+            entity.setWindow(this);
             entity.init();
             entity.onResize(new Vector2(getWidth(), getHeight()));
             logger.info("Entity " + entity.getClass().getSimpleName() + " initialized");
         }
-        lastFrameTime = System.nanoTime();
+        lastFrameTime = System.nanoTime();    // in ms
         windowTimer.start();
         addMouseListener(this);
         addResizeListener();
@@ -62,6 +61,8 @@ public abstract class Window extends JPanel implements ActionListener, MouseList
         super.paintComponent(g);
         paintComponent((Graphics2D) g);
         Toolkit.getDefaultToolkit().sync();
+        delta = (System.nanoTime() - lastFrameTime) / 1000000f;
+        lastFrameTime = System.nanoTime();    // in ms
     }
 
     public void paintComponent(Graphics2D g2d) {
@@ -74,16 +75,15 @@ public abstract class Window extends JPanel implements ActionListener, MouseList
         g2d.drawRect(0, 0, getWidth(), getHeight());
         for (Entity entity : entitySystem.getAllEntities())
             entity.draw(g2d);
-        lastFrameTime = System.nanoTime();    // in ms
     }
 
     /**
      * Need Repaint duration : 0.0034 ms
      * Repaint duration: 1.9141 ms
      *
-     * @param delta delta time between two frames in ms
+     * @param delta time since last frame in ms
      */
-    protected void checkRepaintJob(double delta) {
+    protected void checkRepaintJob(float delta) {
         boolean repaint = false;
         for (Entity entity : entitySystem.getAllEntities()) {
             entity.update(delta);
@@ -98,7 +98,7 @@ public abstract class Window extends JPanel implements ActionListener, MouseList
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        checkRepaintJob((System.nanoTime() / 1000000d) - lastFrameTime);
+        checkRepaintJob(delta);
     }
 
     /**

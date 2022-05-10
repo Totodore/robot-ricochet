@@ -10,7 +10,7 @@ import com.example.robotricochet.entities.game.BoardCenter;
 import com.example.robotricochet.entities.game.PickedCard;
 import com.example.robotricochet.entities.game.Robot;
 import com.example.robotricochet.entities.game.Wall;
-import com.example.robotricochet.entities.ui.TextField;
+import com.example.robotricochet.entities.ui.TextInput;
 import com.example.robotricochet.entities.ui.Timer;
 import com.example.robotricochet.systems.GameSystem;
 import com.example.robotricochet.systems.LevelSystem;
@@ -21,7 +21,7 @@ public class GameWindow extends Window {
     private final GameSystem gameSystem;
 
     public GameWindow() {
-        super(true);
+        super();
         gameSystem = new GameSystem(entitySystem);
         levelSystem.loadLevel(1);
         entitySystem.add(new Board(), new BoardCenter());
@@ -32,6 +32,6 @@ public class GameWindow extends Window {
             entitySystem.add(new Wall(pos, Direction.Vertical));
         }
         Robot robot = new Robot(RobotColor.Red, new Vector2(4, 4));
-        entitySystem.add(robot, new PickedCard(CardType.Moon, RobotColor.Red),new Timer(), new TextField());
+        entitySystem.add(robot, new PickedCard(CardType.Moon, RobotColor.Red), new Timer());
     }
 }

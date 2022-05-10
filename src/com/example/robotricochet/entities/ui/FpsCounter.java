@@ -17,7 +17,7 @@ public class FpsCounter extends Entity {
     }
 
     @Override
-    public void update(double delta) {
+    public void update(float delta) {
         frameCount++;
         dt += delta / 1000;
         float updateRate = 4.0f;

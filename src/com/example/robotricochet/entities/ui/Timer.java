@@ -5,13 +5,14 @@ import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.entities.Entity;
 import com.example.robotricochet.entities.game.Board;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
 
 public class Timer extends Entity {
 
     private Board board;
-    private int timer = 1200;
+    private long timer = 120_000;
 
     @Override
     public void init() {
@@ -25,25 +26,31 @@ public class Timer extends Entity {
     public void update(float delta) {
         if (timer > 0) {
             timer -= delta;
+            setDirty(true);
         }
-        if (timer < 0){
-            timer=0;
+        if (timer < 0) {
+            timer = 0;
+            setDirty(true);
         }
     }
 
     @Override
     public void draw(Graphics2D g) {
         g.setColor(Color.white);
-        int min = timer / 60000;
-        int sec = (timer % 60000) / 1000;
-        int millis = (timer % 60000) % 1000;
-        //g.drawImage(getCard(bounds.getSize().x), bounds.getPosition().x, bounds.getPosition().y, null)
+        // Convert ns to min sec and millis
+        int min = (int) (timer / 60000);
+        int sec = (int) (timer / 1000) % 60;
+        int millis = (int) (timer % 1000);
         g.setColor(new Color(0xD14C4C));
         g.setFont(new Font(null, Font.PLAIN, 40));
-        g.fillRoundRect(bounds.getPosition().x - 10, bounds.getPosition().y -g.getFontMetrics().getHeight() / 2 - 10, 300, 100, 5, 5);
+        g.fillRoundRect(
+                bounds.getPosition().x - 10,
+                bounds.getPosition().y - g.getFontMetrics().getHeight() / 2 - 10,
+                250, 100, 5, 5);
         g.setColor(Color.white);
-        g.drawString(pad(min) + ":" + pad(sec) + ":" + pad(millis), bounds.getPosition().x, bounds.getPosition().y);
-        if (timer==0) {
+        g.drawString(pad(min) + ":" + pad(sec) + ":" + pad(millis),
+                bounds.getPosition().x + 25, bounds.getPosition().y + 25);
+        if (timer == 0) {
             g.drawString("Time's Up", 30, 30);
         }
 
@@ -67,8 +74,6 @@ public class Timer extends Entity {
 
     private String pad(int val) {
         return String.format("%1$2s", val).replace(' ', '0');
-
-
     }
 }
 

@@ -16,7 +16,7 @@ public class BoardCenter extends Entity implements BoardObject {
     }
 
     @Override
-    public void update(double delta) {
+    public void update(float delta) {
 
     }
 

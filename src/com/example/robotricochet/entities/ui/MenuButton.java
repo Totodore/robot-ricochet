@@ -6,7 +6,6 @@ import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.entities.Entity;
 
 import java.awt.Graphics2D;
-import java.awt.TextField;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
@@ -26,7 +25,7 @@ public class MenuButton extends Entity {
     }
 
     @Override
-    public void update(double delta) {
+    public void update(float delta) {
 
     }
 

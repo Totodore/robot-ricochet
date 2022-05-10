@@ -4,6 +4,7 @@ import com.example.robotricochet.components.Bounds;
 import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.systems.EntitySystem;
 import com.example.robotricochet.systems.ResourceSystem;
+import com.example.robotricochet.windows.Window;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,9 @@ public abstract class Entity {
     protected final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
     protected final ResourceSystem resourceSystem = new ResourceSystem();
+
+    @Setter
+    protected Window window;
 
     @Setter
     protected EntitySystem entitySystem;
@@ -33,7 +37,7 @@ public abstract class Entity {
 
     public abstract void init();
 
-    public abstract void update(double delta);
+    public abstract void update(float delta);
 
     public abstract void draw(Graphics2D g);
 
