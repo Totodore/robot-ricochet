@@ -24,9 +24,11 @@ public class Application extends JFrame {
         app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         app.setBackground(Color.BLACK);
 
-        // Fullscreen
-//        app.setExtendedState(JFrame.MAXIMIZED_BOTH);
-//        app.setUndecorated(true);
+        // Fullscreen in release mode
+        if (System.getenv("ENVIRONMENT") == null || System.getenv("ENVIRONMENT").startsWith("prod")) {
+            app.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            app.setUndecorated(true);
+        }
 
         app.setVisible(true);
         app.setLocationRelativeTo(null);

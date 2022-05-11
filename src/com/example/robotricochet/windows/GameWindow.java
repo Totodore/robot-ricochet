@@ -6,7 +6,6 @@ import com.example.robotricochet.components.CardType;
 import com.example.robotricochet.components.Direction;
 import com.example.robotricochet.components.RobotColor;
 import com.example.robotricochet.components.Vector2;
-import com.example.robotricochet.entities.Entity;
 import com.example.robotricochet.entities.game.Board;
 import com.example.robotricochet.entities.game.BoardCenter;
 import com.example.robotricochet.entities.game.Card;
@@ -17,17 +16,9 @@ import com.example.robotricochet.entities.ui.Timer;
 import com.example.robotricochet.systems.GameSystem;
 import com.example.robotricochet.systems.LevelSystem;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Queue;
 import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class GameWindow extends Window {
 
@@ -38,19 +29,7 @@ public class GameWindow extends Window {
         super();
         gameSystem = new GameSystem(entitySystem, levelSystem);
         levelSystem.loadLevel(1);
-        Board board = new Board();
-        entitySystem.add(board, new BoardCenter());
-        for (Vector2 pos : levelSystem.getVerticalWalls()) {
-            entitySystem.add(new Wall(pos, Direction.Vertical));
-        }
-        for (Vector2 pos : levelSystem.getHorizontalWalls()) {
-            entitySystem.add(new Wall(pos, Direction.Horizontal));
-        }
 
-//        Robot robot = new Robot(RobotColor.Red, new Vector2(4, 4));
-        entitySystem.add(new PickedCard(CardType.Moon, RobotColor.Red), new Timer());
-        initRobots();
-        initGoals();
 //        board.setMoves(new Move[]{
 //                new Move(new Vector2(0, 0), new Vector2(0, 4), robot),
 //                new Move(new Vector2(0, 0), new Vector2(4, 0), robot),
@@ -59,10 +38,15 @@ public class GameWindow extends Window {
 
     @Override
     public void init() {
+        initBoard();
+        initWalls();
+        initRobots();
+        initGoals();
         super.init();
-        for (Entity entity : entitySystem.getAllEntities()) {
-            entity.setGameSystem(gameSystem);
-        }
+    }
+
+    private void initBoard() {
+        addEntity(new Board(), new BoardCenter(), new PickedCard(CardType.Moon, RobotColor.Red), new Timer());
     }
 
     private void initRobots() {
@@ -76,9 +60,7 @@ public class GameWindow extends Window {
                 y = random.nextInt(16);
             } while (levelSystem.hasWallNear(new Vector2(x, y)) || center.contains(new Vector2(x, y)));
             robot = new Robot(RobotColor.values()[i], new Vector2(x, y));
-            entitySystem.add(robot);
-            robot.init();
-            robot.setWindow(this);
+            addEntity(robot);
         }
     }
 
@@ -92,9 +74,16 @@ public class GameWindow extends Window {
                 card = new Card(CardType.values()[random.nextInt(4)], RobotColor.values()[random.nextInt(4)], positions.get(i));
             } while (cards.contains(card));
             cards.add(card);
-            entitySystem.add(card);
-            card.init();
-            card.setWindow(this);
+            addEntity(card);
+        }
+    }
+
+    private void initWalls() {
+        for (Vector2 pos : levelSystem.getVerticalWalls()) {
+            addEntity(new Wall(pos, Direction.Vertical));
+        }
+        for (Vector2 pos : levelSystem.getHorizontalWalls()) {
+            addEntity(new Wall(pos, Direction.Horizontal));
         }
     }
 }

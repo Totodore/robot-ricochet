@@ -60,7 +60,7 @@ public class Board extends Entity {
     @Override
     public void onResize(Vector2 screenSize) {
         logger.info("Resizing board");
-        cellSize = (int) ((screenSize.y * 0.94) / 16);
+        cellSize = (int) ((screenSize.y * 0.94) / 16);      // The board is a 16x16 grid with a size of 94% of the screen height
         setBounds(new Bounds(48, (int) (screenSize.y * 0.03), cellSize * 16, cellSize * 16));
         resourceSystem.removeSizedImageAsset("tiles/tile.png");
     }

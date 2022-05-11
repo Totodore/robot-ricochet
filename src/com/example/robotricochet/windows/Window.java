@@ -25,6 +25,7 @@ public abstract class Window extends JPanel implements ActionListener, MouseList
 
     private long lastFrameTime;
     private float delta;
+    private boolean initialized = false;
     protected final EntitySystem entitySystem = new EntitySystem();
     protected final Timer windowTimer = new Timer(0, this);
     protected final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
@@ -44,17 +45,31 @@ public abstract class Window extends JPanel implements ActionListener, MouseList
     }
 
     public void init() {
-        for (Entity entity : entitySystem.getAllEntities()) {
-            entity.setWindow(this);
-            entity.setEntitySystem(entitySystem);
-            entity.init();
-            entity.onResize(new Vector2(getWidth(), getHeight()));
-            logger.info("Entity " + entity.getClass().getSimpleName() + " initialized");
-        }
         lastFrameTime = System.nanoTime();    // in ms
         windowTimer.start();
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        initialized = true;
         addMouseListener(this);
         addResizeListener();
+        Vector2 size = new Vector2(getWidth(), getHeight());
+        for (Entity entity : entitySystem.getAllEntities()) {
+            entity.onResize(size);
+            entity.setDirty(true);
+        }
+    }
+
+    public void addEntity(Entity entity) {
+        entity.setWindow(this);
+        entity.setEntitySystem(entitySystem);
+        entity.init();
+        entitySystem.add(entity);
+        logger.info("Entity " + entity.getClass().getSimpleName() + " initialized");
+    }
+
+    public void addEntity(Entity... entities) {
+        for (Entity entity : entities) {
+            addEntity(entity);
+        }
     }
 
     @Override
