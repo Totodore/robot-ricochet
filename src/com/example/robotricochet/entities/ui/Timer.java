@@ -1,9 +1,11 @@
 package com.example.robotricochet.entities.ui;
 
 import com.example.robotricochet.components.Bounds;
+import com.example.robotricochet.components.CursorType;
 import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.entities.Entity;
 import com.example.robotricochet.entities.game.Board;
+import com.example.robotricochet.windows.GameWindow;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,11 +14,17 @@ import java.awt.Graphics2D;
 public class Timer extends Entity {
 
     private Board board;
-    private long timer = 120_000;
+    private long timer = 10_000;
+    private boolean started = false;
 
     @Override
     public void init() {
         board = entitySystem.find(Board.class).orElseThrow();
+    }
+
+    public void start() {
+        started = true;
+        setDirty(true);
     }
 
     /**
@@ -24,6 +32,8 @@ public class Timer extends Entity {
      */
     @Override
     public void update(float delta) {
+        if (!started)
+            return;
         if (timer > 0) {
             timer -= delta;
             setDirty(true);
@@ -31,6 +41,7 @@ public class Timer extends Entity {
         if (timer < 0) {
             timer = 0;
             setDirty(true);
+            started = false;
         }
     }
 
@@ -46,30 +57,48 @@ public class Timer extends Entity {
         g.fillRoundRect(
                 bounds.getPosition().x - 10,
                 bounds.getPosition().y - g.getFontMetrics().getHeight() / 2 - 10,
-                250, 100, 5, 5);
+                bounds.getSize().x, bounds.getSize().y, 5, 5);
         g.setColor(Color.white);
-        g.drawString(pad(min) + ":" + pad(sec) + ":" + pad(millis),
-                bounds.getPosition().x + 25, bounds.getPosition().y + 25);
-        if (timer == 0) {
-            g.drawString("Time's Up", 30, 30);
+        if (started) {
+            String time = pad(min) + ":" + pad(sec) + ":" + pad(millis);
+            g.drawString(time, bounds.getPosition().x + 25, bounds.getPosition().y + 25);
+        } else if (timer == 0) {
+            g.drawString("Time's Up !", bounds.getPosition().x + 20, bounds.getPosition().y + 25);
+        } else {
+            g.drawString("Start", bounds.getPosition().x + 70, bounds.getPosition().y + 25);
         }
-
-
     }
 
     @Override
     public void onResize(Vector2 screenSize) {
         setBounds(new Bounds(
-                board.getPosition().x + board.getSize().x + 100,
+                board.getPosition().x + board.getSize().x + (screenSize.x - board.getPosition().x - board.getSize().x) / 2 - 125,
                 screenSize.y / 2,
-                0, 0
+                250, 100
         ));
     }
 
     @Override
     public boolean onClick(Vector2 position) {
+        if (timer == 0 && !started) {
+            timer = 120_000;
+            setDirty(true);
+        } else if (!started) {
+            ((GameWindow) window).drawCard();
+            start();
+        }
+        return false;
+    }
 
-        return super.onClick(position);
+    @Override
+    public void onEnter(Vector2 position) {
+        if (!started)
+            window.setCursor(CursorType.POINTER);
+    }
+
+    @Override
+    public void onLeave(Vector2 position) {
+        window.setCursor(CursorType.BASE);
     }
 
     private String pad(int val) {

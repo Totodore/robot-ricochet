@@ -38,12 +38,14 @@ public class LevelSystem {
                 else
                     cardPositions.add(new Vector2(x, y));
             }
+            // Borders
             for (int i = 0; i < 16; i++) {
                 verticalWalls.add(new Vector2(-1, i));
                 verticalWalls.add(new Vector2(15, i));
                 horizontalWalls.add(new Vector2(i, -1));
                 horizontalWalls.add(new Vector2(i, 15));
             }
+            // Center
             for (int i = 7; i < 9; i++) {
                 verticalWalls.add(new Vector2(6, i));
                 verticalWalls.add(new Vector2(8, i));

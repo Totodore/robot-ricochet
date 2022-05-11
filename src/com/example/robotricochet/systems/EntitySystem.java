@@ -100,10 +100,6 @@ public class EntitySystem {
         }
     }
 
-    public Stream<Entity> findUnderPoint(Vector2 position) {
-        return entities.values().stream().filter(entity -> entity.getBounds().contains(position));
-    }
-
 
     /**
      * Returns a list of entities that are clicked on.

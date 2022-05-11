@@ -33,6 +33,10 @@ public abstract class Entity {
 
     @Getter
     @Setter
+    protected boolean mouseover = false;
+
+    @Getter
+    @Setter
     private boolean isVisible = true;
 
     @Getter
@@ -51,16 +55,13 @@ public abstract class Entity {
         return false;
     }
 
-    public boolean onHover(Vector2 position) {
-        return false;
+    public void onHover(Vector2 position) {
     }
 
-    public boolean onEnter(Vector2 position) {
-        return false;
+    public void onEnter(Vector2 position) {
     }
 
-    public boolean onLeave(Vector2 position) {
-        return false;
+    public void onLeave(Vector2 position) {
     }
 
     public Vector2 getPosition() {

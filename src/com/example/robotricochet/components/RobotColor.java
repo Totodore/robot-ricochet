@@ -6,8 +6,8 @@ import java.awt.Color;
 
 public enum RobotColor {
     Red(new Color(0xFF0000)),
-    Green(new Color(0x0000FF)),
-    Blue(new Color(0xBA4AE1)),
+    Green(new Color(0x22FF00)),
+    Blue(new Color(0x0000FF)),
     Silver(new Color(0xB2ACAC));
 
     @Getter

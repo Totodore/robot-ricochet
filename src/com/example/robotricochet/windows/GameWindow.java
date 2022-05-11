@@ -9,9 +9,12 @@ import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.entities.game.Board;
 import com.example.robotricochet.entities.game.BoardCenter;
 import com.example.robotricochet.entities.game.Card;
+import com.example.robotricochet.entities.game.Move;
+import com.example.robotricochet.entities.game.MoveDone;
 import com.example.robotricochet.entities.game.PickedCard;
 import com.example.robotricochet.entities.game.Robot;
 import com.example.robotricochet.entities.game.Wall;
+import com.example.robotricochet.entities.ui.ResetPositionButton;
 import com.example.robotricochet.entities.ui.Timer;
 import com.example.robotricochet.systems.GameSystem;
 import com.example.robotricochet.systems.LevelSystem;
@@ -27,6 +30,7 @@ public class GameWindow extends Window {
 
     public GameWindow() {
         super();
+        setMinSize(new Vector2(1000, 300));
         gameSystem = new GameSystem(entitySystem, levelSystem);
         levelSystem.loadLevel(1);
 
@@ -40,13 +44,13 @@ public class GameWindow extends Window {
     public void init() {
         initBoard();
         initWalls();
-        initRobots();
         initGoals();
+        initRobots();
         super.init();
     }
 
     private void initBoard() {
-        addEntity(new Board(), new BoardCenter(), new PickedCard(CardType.Moon, RobotColor.Red), new Timer());
+        addEntity(new Board(), new BoardCenter(), new Timer());
     }
 
     private void initRobots() {
@@ -85,5 +89,46 @@ public class GameWindow extends Window {
         for (Vector2 pos : levelSystem.getHorizontalWalls()) {
             addEntity(new Wall(pos, Direction.Horizontal));
         }
+    }
+
+    public void drawCard() {
+        entitySystem.remove(PickedCard.class);
+        Random random = new Random();
+        PickedCard card = new PickedCard(CardType.values()[random.nextInt(4)], RobotColor.values()[random.nextInt(4)]);
+        addEntity(card);
+    }
+
+    public void showMoves(Robot robot) {
+        // Removing previous moves
+        entitySystem.removeMany(Move.class);
+        for (Vector2 dest : gameSystem.getDestinations(robot)) {
+            if (dest == null) {
+                continue;
+            }
+            logger.info("Destination: " + dest);
+            addEntity(new Move(robot.getBoardPosition(), dest, robot));
+        }
+    }
+
+    /**
+     * Move the robot to the move destination and clear all moves
+     *
+     * @param robot       The robot to move
+     * @param destination The board destination of the robot
+     */
+    public void moveRobot(Robot robot, Vector2 destination, Move move) {
+        if (entitySystem.find(ResetPositionButton.class).isEmpty()) {
+            addEntity(new ResetPositionButton(robot, robot.getBoardPosition()));
+        }
+        addEntity(new MoveDone(move));
+        robot.setBoardDestination(destination);
+        entitySystem.removeMany(Move.class);
+    }
+
+    public void resetRobotPosition(Robot robot, Vector2 position) {
+        robot.setBoardPosition(position);
+        entitySystem.remove(ResetPositionButton.class);
+        entitySystem.removeMany(MoveDone.class);
+        entitySystem.removeMany(Move.class);
     }
 }

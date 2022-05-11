@@ -4,8 +4,8 @@ import java.awt.geom.Rectangle2D;
 
 public class Bounds {
 
-    public Vector2 position;
-    public Vector2 size;
+    public final Vector2 position;
+    public final Vector2 size;
 
     public Bounds(Vector2 position, Vector2 size) {
         this.position = position;

@@ -32,8 +32,6 @@ public class PickedCard extends Entity {
 
     @Override
     public void draw(Graphics2D g) {
-//        g.setPaint(new TexturePaint(getCard(board.cellSize), new Rectangle2D.Float(0, 0, board.cellSize, board.cellSize)));
-//        g.fillRect(bounds.getPosition().x, bounds.getPosition().y, bounds.getSize().x, bounds.getSize().y);
         g.drawImage(getCard(bounds.getSize().x), bounds.getPosition().x, bounds.getPosition().y, null);
     }
 

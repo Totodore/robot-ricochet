@@ -32,6 +32,12 @@ public class Vector2 {
     public static Vector2 zero() {
         return new Vector2(0, 0);
     }
+    public static Vector2 min(Vector2 v1, Vector2 v2) {
+        return new Vector2(Math.min(v1.x, v2.x), Math.min(v1.y, v2.y));
+    }
+    public static Vector2 max(Vector2 v1, Vector2 v2) {
+        return new Vector2(Math.max(v1.x, v2.x), Math.max(v1.y, v2.y));
+    }
 
     public Vector2 translate(Vector2 v) {
         Vector2 v2 = new Vector2(this);
@@ -69,6 +75,13 @@ public class Vector2 {
         return v;
     }
 
+    /**
+     * Clamps the current vector to another vector according to its direction.
+     * The current vector won't be able to go beyond the other vector.
+     * @param point The limiting vector.
+     * @param direction The direction of the current vector.
+     * @return The clamped vector.
+     */
     public Vector2 clamp(Vector2 point, Vector2 direction) {
         Vector2 v = new Vector2(this);
         if (v.x < point.x && direction.x == -1) v.x = point.x;
@@ -78,6 +91,13 @@ public class Vector2 {
         return v;
     }
 
+    public int length() {
+        return (int) Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    public int max() {
+        return Math.max(this.x, this.y);
+    }
     public Vector2 normalize() {
         Vector2 v = new Vector2(this);
         v.x = (int) Math.signum(v.x);
