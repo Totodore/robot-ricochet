@@ -32,9 +32,9 @@ public class LevelSystem {
                 int x = (data[i] & 0xFF) >> 4;          // The first 4 bytes are the x coordinate
                 int y = (data[i] & 0xFF) & 0x0F;        // The last 4 bytes are the y coordinate
                 if (state == 0)
-                    horizontalWalls.add(new Vector2(x, y));
-                else if (state == 1)
                     verticalWalls.add(new Vector2(x, y));
+                else if (state == 1)
+                    horizontalWalls.add(new Vector2(x, y));
                 else
                     cardPositions.add(new Vector2(x, y));
             }
