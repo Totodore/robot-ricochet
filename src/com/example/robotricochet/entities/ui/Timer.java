@@ -14,7 +14,7 @@ import java.awt.Graphics2D;
 public class Timer extends Entity {
 
     private Board board;
-    private long timer = 10_000;
+    private long timer = 120_000;
     private boolean started = false;
 
     @Override

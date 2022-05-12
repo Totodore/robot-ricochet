@@ -11,17 +11,18 @@ import com.example.robotricochet.windows.GameWindow;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.util.HashMap;
 
 public class ResetPositionButton extends Entity {
 
     private Board board;
-    private final Robot robot;
-    private final Vector2 originalPosition;
+    private final HashMap<Robot, Vector2> originalPositions = new HashMap<>();
 
-
-    public ResetPositionButton(Robot robot, Vector2 originalPosition) {
-        this.robot = robot;
-        this.originalPosition = originalPosition;
+    public boolean hasRobot(Robot robot) {
+        return originalPositions.containsKey(robot);
+    }
+    public void addRobotPosition(Robot robot, Vector2 originalPosition) {
+        this.originalPositions.put(robot, originalPosition);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class ResetPositionButton extends Entity {
 
     @Override
     public boolean onClick(Vector2 position) {
-        ((GameWindow) window).resetRobotPosition(robot, originalPosition);
+        ((GameWindow) window).resetRobotPosition(originalPositions);
         window.setCursor(CursorType.BASE);
         return false;
     }

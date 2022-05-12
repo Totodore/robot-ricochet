@@ -20,7 +20,9 @@ import com.example.robotricochet.systems.GameSystem;
 import com.example.robotricochet.systems.LevelSystem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 public class GameWindow extends Window {
@@ -117,16 +119,21 @@ public class GameWindow extends Window {
      * @param destination The board destination of the robot
      */
     public void moveRobot(Robot robot, Vector2 destination, Move move) {
-        if (entitySystem.find(ResetPositionButton.class).isEmpty()) {
-            addEntity(new ResetPositionButton(robot, robot.getBoardPosition()));
+        ResetPositionButton resetPositionButton = entitySystem.find(ResetPositionButton.class).orElse(null);
+        if (resetPositionButton == null) {
+            resetPositionButton = new ResetPositionButton();
+            addEntity(resetPositionButton);
         }
+        resetPositionButton.addRobotPosition(robot, robot.getBoardPosition());
         addEntity(new MoveDone(move));
         robot.setBoardDestination(destination);
         entitySystem.removeMany(Move.class);
     }
 
-    public void resetRobotPosition(Robot robot, Vector2 position) {
-        robot.setBoardPosition(position);
+    public void resetRobotPosition(HashMap<Robot, Vector2> positions) {
+        for (Robot robot : positions.keySet()) {
+            robot.setBoardPosition(positions.get(robot));
+        }
         entitySystem.remove(ResetPositionButton.class);
         entitySystem.removeMany(MoveDone.class);
         entitySystem.removeMany(Move.class);
