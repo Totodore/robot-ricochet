@@ -75,11 +75,9 @@ public class LevelSystem {
         return false;
     }
 
-    /**
-     * Return all the wall corners of the board
-     */
-    public Vector2[] getCorners() {
-        Vector2[] corners = new Vector2[16];
-        return new Vector2[]{};
+    public List<Vector2> getWalls() {
+        List<Vector2> list = new ArrayList<>(verticalWalls);
+        list.addAll(horizontalWalls);
+        return list;
     }
 }

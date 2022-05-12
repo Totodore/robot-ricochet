@@ -15,6 +15,7 @@ import com.example.robotricochet.entities.game.MoveDone;
 import com.example.robotricochet.entities.game.PickedCard;
 import com.example.robotricochet.entities.game.Robot;
 import com.example.robotricochet.entities.game.Wall;
+import com.example.robotricochet.entities.ui.MoveCounter;
 import com.example.robotricochet.entities.ui.ResetPositionButton;
 import com.example.robotricochet.entities.ui.Timer;
 import com.example.robotricochet.systems.GameSystem;
@@ -32,7 +33,7 @@ public class GameWindow extends Window {
 
     public GameWindow() {
         super();
-        setMinSize(new Vector2(1000, 300));
+        setMinSize(new Vector2(1200, 500));
         gameSystem = new GameSystem(entitySystem, levelSystem);
         levelSystem.loadLevel(1);
     }
@@ -47,7 +48,7 @@ public class GameWindow extends Window {
     }
 
     private void initBoard() {
-        addEntity(new Board(), new BoardCenter(), new Timer());
+        addEntity(new Board(), new BoardCenter(), new Timer(), new MoveCounter());
     }
 
     private void initRobots() {
@@ -135,9 +136,11 @@ public class GameWindow extends Window {
         // In case of win
         if (pickedCard.equalToCard(entitySystem.findWhere(Card.class, c -> c.getBoardPosition().equals(destination)).orElse(null)) && robot.getColor() == pickedCard.getColor()) {
             entitySystem.find(Timer.class).orElseThrow().reset();
+            entitySystem.find(MoveCounter.class).orElseThrow().reset();
             entitySystem.remove(pickedCard);
             entitySystem.find(ResetPositionButton.class).orElseThrow().onClick(Vector2.zero());
         } else {
+            entitySystem.find(MoveCounter.class).orElseThrow().tick();
             // Show future moves
             Utils.setTimeout(() -> showMoves(robot), (int) Robot.ANIMATION_DURATION + 100);
         }
@@ -150,5 +153,6 @@ public class GameWindow extends Window {
         entitySystem.remove(ResetPositionButton.class);
         entitySystem.removeMany(MoveDone.class);
         entitySystem.removeMany(Move.class);
+        entitySystem.find(MoveCounter.class).orElseThrow().reset();
     }
 }

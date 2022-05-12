@@ -22,7 +22,9 @@ public class ResetPositionButton extends Entity {
         return originalPositions.containsKey(robot);
     }
     public void addRobotPosition(Robot robot, Vector2 originalPosition) {
-        this.originalPositions.put(robot, originalPosition);
+        if (!hasRobot(robot)) {
+            originalPositions.put(robot, originalPosition);
+        }
     }
 
     @Override

@@ -44,8 +44,8 @@ public class MoveCounter extends Entity {
     @Override
     public void onResize(Vector2 screenSize) {
         setBounds(new Bounds(
-                board.getPosition().x + board.getSize().x + (screenSize.x - board.getPosition().x - board.getSize().x) / 2 - 125,
-                screenSize.y / 2 + 400,
+                board.getPosition().x + board.getSize().x + (screenSize.x - board.getPosition().x - board.getSize().x) / 2 - 200,
+                screenSize.y / 2 + 100,
                 250, 100
         ));
     }

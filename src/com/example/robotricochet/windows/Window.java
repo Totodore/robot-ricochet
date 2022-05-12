@@ -1,5 +1,6 @@
 package com.example.robotricochet.windows;
 
+import com.example.robotricochet.Application;
 import com.example.robotricochet.components.CursorType;
 import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.entities.Entity;
@@ -34,7 +35,7 @@ public abstract class Window extends JPanel implements ActionListener, MouseList
     private long lastFrameTime;
     private final ResourceSystem resourceSystem = new ResourceSystem();
     protected final EntitySystem entitySystem = new EntitySystem();
-    protected final Timer windowTimer = new Timer(0, this);
+    protected final Timer windowTimer = new Timer((int) ((1 / Application.REFRESH_RATE) * 1000), this);
     protected final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
     protected static final Color REFRESH_COLOR = new Color(0x00);
@@ -131,6 +132,9 @@ public abstract class Window extends JPanel implements ActionListener, MouseList
     }
 
 
+    /**
+     * Check if the window should be repaint or not
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         checkRepaintJob();
