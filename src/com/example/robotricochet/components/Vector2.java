@@ -98,11 +98,17 @@ public class Vector2 {
     public int max() {
         return Math.max(this.x, this.y);
     }
+
     public Vector2 normalize() {
         Vector2 v = new Vector2(this);
         v.x = (int) Math.signum(v.x);
         v.y = (int) Math.signum(v.y);
         return v;
+    }
+
+    @Override
+    public Vector2 clone() {
+        return new Vector2(this);
     }
 
     public Vector2 scale(Vector2 v) {

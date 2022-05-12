@@ -1,7 +1,6 @@
 package com.example.robotricochet;
 
 import com.example.robotricochet.windows.GameWindow;
-import com.example.robotricochet.windows.MenuWindow;
 import com.example.robotricochet.windows.Window;
 
 import javax.swing.JFrame;

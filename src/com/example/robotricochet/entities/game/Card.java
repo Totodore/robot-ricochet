@@ -15,7 +15,9 @@ import java.util.Objects;
 public class Card extends Entity implements BoardObject {
 
     private Board board;
+    @Getter
     private final CardType cardType;
+    @Getter
     private final RobotColor color;
 
     @Getter

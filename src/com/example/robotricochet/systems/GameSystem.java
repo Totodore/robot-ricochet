@@ -41,11 +41,11 @@ public class GameSystem {
             Vector2 currentPos = new Vector2(i, robot.getBoardPosition().y);
             if (i == robot.getBoardPosition().x && isWallHit(currentPos, Direction.Vertical)) {
                 break;
-            } else if (i != robot.getBoardPosition().x && isWallHit(currentPos, Direction.Vertical)) {
-                destinations[0] = new Vector2(i + 1, robot.getBoardPosition().y);
-                break;
             } else if (i != robot.getBoardPosition().x && isRobotHit(currentPos)) {
                 destinations[0] = new Vector2(i, robot.getBoardPosition().y);
+                break;
+            } else if (i != robot.getBoardPosition().x && isWallHit(currentPos, Direction.Vertical)) {
+                destinations[0] = new Vector2(i + 1, robot.getBoardPosition().y);
                 break;
             }
         }
@@ -63,11 +63,11 @@ public class GameSystem {
             Vector2 currentPos = new Vector2(robot.getBoardPosition().x, i);
             if (i == robot.getBoardPosition().y && isWallHit(currentPos, Direction.Horizontal)) {
                 break;
-            } else if (i != robot.getBoardPosition().y && isWallHit(currentPos, Direction.Horizontal)) {
-                destinations[2] = new Vector2(robot.getBoardPosition().x, i + 1);
-                break;
             } else if (i != robot.getBoardPosition().y && isRobotHit(currentPos)) {
                 destinations[2] = new Vector2(robot.getBoardPosition().x, i);
+                break;
+            } else if (i != robot.getBoardPosition().y && isWallHit(currentPos, Direction.Horizontal)) {
+                destinations[2] = new Vector2(robot.getBoardPosition().x, i + 1);
                 break;
             }
         }

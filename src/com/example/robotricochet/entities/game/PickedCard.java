@@ -5,6 +5,8 @@ import com.example.robotricochet.components.CardType;
 import com.example.robotricochet.components.RobotColor;
 import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.entities.Entity;
+import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -12,7 +14,9 @@ import java.awt.image.BufferedImage;
 public class PickedCard extends Entity {
 
     private Board board;
+    @Getter
     private final CardType cardType;
+    @Getter
     private final RobotColor color;
 
     public PickedCard(CardType cardType, RobotColor color) {
@@ -38,12 +42,19 @@ public class PickedCard extends Entity {
     @Override
     public void onResize(Vector2 screenSize) {
         setBounds(new Bounds(
-                board.getPosition().translate(board.getSize().scale(0.5f).translate(-board.cellSize )),
+                board.getPosition().translate(board.getSize().scale(0.5f).translate(-board.cellSize)),
                 new Vector2(board.cellSize).scale(2)));
         resourceSystem.removeSizedImageAsset("tiles/" + color.toString() + "-" + cardType.toString() + ".png");
     }
 
     public BufferedImage getCard(int s) {
         return resourceSystem.getImageAsset("tiles/" + color.toString() + "-" + cardType.toString() + ".png", s, s);
+    }
+
+    public boolean equalToCard(@Nullable Card card) {
+        if (card == null) {
+            return false;
+        }
+        return cardType == card.getCardType() && color == card.getColor();
     }
 }

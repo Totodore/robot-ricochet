@@ -21,6 +21,9 @@ public class Move extends Entity implements BoardObject {
     @Getter
     private final Vector2 boardDestination;
 
+    private final static float ANIMATION_DURATION = 100;  // Duration in ms
+    private float progression = 0;
+
     private Board board;
 
     public Move(Vector2 pos, Vector2 destination, Robot robot) {
@@ -36,14 +39,22 @@ public class Move extends Entity implements BoardObject {
 
     @Override
     public void update(float delta) {
-
+        if (isMoving()) {
+            progression += (delta * (bounds.getSize().max() / ANIMATION_DURATION)) / bounds.getSize().max();
+            progression = progression > 1 ? 1 : progression;
+            setDirty(true);
+        }
     }
+
 
     @Override
     public void draw(Graphics2D g) {
         g.setColor(getRobot().getColor().getTransparentColor());
-
-        g.fillRect(bounds.getPosition().x, bounds.getPosition().y, bounds.getSize().x, bounds.getSize().y);
+        if (bounds.getSize().max() == bounds.getSize().x) {
+            g.fillRect(bounds.getPosition().x, bounds.getPosition().y, (int) (bounds.getSize().x * progression), bounds.getSize().y);
+        } else {
+            g.fillRect(bounds.getPosition().x, bounds.getPosition().y, bounds.getSize().x, (int) (bounds.getSize().y * progression));
+        }
     }
 
     @Override
@@ -82,5 +93,9 @@ public class Move extends Entity implements BoardObject {
             destination.y -= 1;
         ((GameWindow) window).moveRobot(robot, destination, this);
         return false;
+    }
+
+    private boolean isMoving() {
+        return progression != 1;
     }
 }

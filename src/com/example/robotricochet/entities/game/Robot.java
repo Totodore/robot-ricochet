@@ -27,7 +27,7 @@ public class Robot extends Entity implements BoardObject {
 
     private Board board;
 
-    private final static float ANIMATION_DURATION = 250;  // Duration in ms
+    public final static float ANIMATION_DURATION = 200;  // Duration in ms
 
     public Robot(RobotColor color, Vector2 position) {
         this.color = color;

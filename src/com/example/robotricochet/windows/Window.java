@@ -71,7 +71,7 @@ public abstract class Window extends JPanel implements ActionListener, MouseList
         }
     }
 
-    public void addEntity(Entity entity) {
+    public synchronized void addEntity(Entity entity) {
         entity.setWindow(this);
         entity.setEntitySystem(entitySystem);
         entity.init();
@@ -93,7 +93,7 @@ public abstract class Window extends JPanel implements ActionListener, MouseList
         Toolkit.getDefaultToolkit().sync();
     }
 
-    public void paintComponent(Graphics2D g2d) {
+    public synchronized void paintComponent(Graphics2D g2d) {
         g2d.setRenderingHints(new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB));
         // Max quality
         g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
@@ -117,7 +117,6 @@ public abstract class Window extends JPanel implements ActionListener, MouseList
     /**
      * Need Repaint duration : 0.0034 ms
      * Repaint duration: 1.9141 ms
-     *
      */
     protected void checkRepaintJob() {
         float delta = (System.nanoTime() - lastFrameTime) / 1000000f;

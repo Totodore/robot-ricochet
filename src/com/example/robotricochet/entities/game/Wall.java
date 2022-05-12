@@ -7,8 +7,6 @@ import com.example.robotricochet.entities.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 

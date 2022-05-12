@@ -6,6 +6,7 @@ import com.example.robotricochet.entities.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 public class MoveDone extends Entity {
@@ -20,8 +21,9 @@ public class MoveDone extends Entity {
     @Getter
     private final Vector2 boardDestination;
 
-    private final static float ANIMATION_DURATION = 250;  // Duration in ms
+    private final static float ANIMATION_DURATION = 200;  // Duration in ms
     private float progression = 0;
+    private final Color color;
 
     private Board board;
 
@@ -29,12 +31,11 @@ public class MoveDone extends Entity {
         this.boardPosition = pos;
         this.boardDestination = destination;
         this.robot = robot;
+        color = new Color(robot.getColor().getColor().getRed(), robot.getColor().getColor().getGreen(), robot.getColor().getColor().getBlue(), 0xA0);
     }
 
     public MoveDone(Move move) {
-        this.boardPosition = move.getBoardPosition();
-        this.boardDestination = move.getBoardDestination();
-        this.robot = move.getRobot();
+        this(move.getBoardPosition(), move.getBoardDestination(), move.getRobot());
     }
 
     @Override
@@ -53,7 +54,7 @@ public class MoveDone extends Entity {
 
     @Override
     public void draw(Graphics2D g) {
-        g.setColor(getRobot().getColor().getTransparentColor());
+        g.setColor(color);
         int cells = (int) ((bounds.getSize().max() / board.cellSize) * progression);
         for (int i = 0; i < cells; i++) {
             if (bounds.getSize().x == board.cellSize) {

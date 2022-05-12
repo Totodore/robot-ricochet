@@ -27,6 +27,12 @@ public class Timer extends Entity {
         setDirty(true);
     }
 
+    public void reset() {
+        timer = 120_000;
+        started = false;
+        setDirty(true);
+    }
+
     /**
      * @param delta le nombre de ms écoulé entre deux appels de update
      */
@@ -80,20 +86,20 @@ public class Timer extends Entity {
 
     @Override
     public boolean onClick(Vector2 position) {
-        if (timer == 0 && !started) {
-            timer = 120_000;
-            setDirty(true);
-        } else if (!started) {
+        if (!started) {
             ((GameWindow) window).drawCard();
             start();
+        } else {
+            timer = 120_000;
+            setDirty(true);
+            started = false;
         }
         return false;
     }
 
     @Override
     public void onEnter(Vector2 position) {
-        if (!started)
-            window.setCursor(CursorType.POINTER);
+        window.setCursor(CursorType.POINTER);
     }
 
     @Override
