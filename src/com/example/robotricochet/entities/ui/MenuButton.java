@@ -2,6 +2,7 @@ package com.example.robotricochet.entities.ui;
 
 import com.example.robotricochet.Utils;
 import com.example.robotricochet.components.Bounds;
+import com.example.robotricochet.components.CursorType;
 import com.example.robotricochet.components.Vector2;
 import com.example.robotricochet.entities.Entity;
 
@@ -38,7 +39,7 @@ public class MenuButton extends Entity {
     public void onResize(Vector2 screenSize) {
         setBounds(new Bounds(
                 new Vector2(
-                        screenSize.x / 2,
+                        screenSize.x / 2 - 150,
                         screenSize.y / 2
                 ),
                 new Vector2(
@@ -51,8 +52,18 @@ public class MenuButton extends Entity {
     @Override
     public boolean onClick(Vector2 position) {
         isClicked = true;
-        Utils.setTimeout(() -> onClick.accept(null), 2000);
+        onClick.accept(null);
         return true;
+    }
+
+    @Override
+    public void onEnter(Vector2 position) {
+        window.setCursor(CursorType.POINTER);
+    }
+
+    @Override
+    public void onLeave(Vector2 position) {
+        window.setCursor(CursorType.BASE);
     }
 
     public BufferedImage getImg(int s) {

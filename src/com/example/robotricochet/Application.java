@@ -1,6 +1,7 @@
 package com.example.robotricochet;
 
 import com.example.robotricochet.windows.GameWindow;
+import com.example.robotricochet.windows.MenuWindow;
 import com.example.robotricochet.windows.Window;
 
 import javax.swing.JFrame;
@@ -31,8 +32,7 @@ public class Application extends JFrame {
 
         app.setVisible(true);
         app.setLocationRelativeTo(null);
-//        app.window = new MenuWindow((Void) -> app.window = new GameWindow());
-        app.window = new GameWindow();
+        showMenu(app);
         // Window entity configuration
         app.window.setSize(app.getWidth(), app.getHeight());
         app.window.setPreferredSize(app.window.getSize());
@@ -43,4 +43,25 @@ public class Application extends JFrame {
         logger.info("Starting game");
     }
 
+    public static void showGame(Application app) {
+        if (app.window != null)
+            app.remove(app.window);
+        app.window = new GameWindow((Void) -> showMenu(app));
+        app.window.setSize(app.getWidth(), app.getHeight());
+        app.window.setPreferredSize(app.window.getSize());
+        app.window.init();
+        app.window.setVisible(true);
+        app.add(app.window);
+    }
+
+    public static void showMenu(Application app) {
+        if (app.window != null)
+            app.remove(app.window);
+        app.window = new MenuWindow((Void) -> showGame(app));
+        app.window.setSize(app.getWidth(), app.getHeight());
+        app.window.setPreferredSize(app.window.getSize());
+        app.window.init();
+        app.window.setVisible(true);
+        app.add(app.window);
+    }
 }

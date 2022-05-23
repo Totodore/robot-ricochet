@@ -7,6 +7,6 @@ import java.util.function.Consumer;
 public class MenuWindow extends Window {
 
     public MenuWindow(Consumer<Void> onStart) {
-        entitySystem.add(new MenuButton("play", onStart));
+        addEntity(new MenuButton("play", onStart));
     }
 }

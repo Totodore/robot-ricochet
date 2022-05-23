@@ -15,6 +15,7 @@ import com.example.robotricochet.entities.game.MoveDone;
 import com.example.robotricochet.entities.game.PickedCard;
 import com.example.robotricochet.entities.game.Robot;
 import com.example.robotricochet.entities.game.Wall;
+import com.example.robotricochet.entities.ui.BackToMenuButton;
 import com.example.robotricochet.entities.ui.MoveCounter;
 import com.example.robotricochet.entities.ui.ResetPositionButton;
 import com.example.robotricochet.entities.ui.Timer;
@@ -25,14 +26,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 
 public class GameWindow extends Window {
 
     private final LevelSystem levelSystem = new LevelSystem();
     private final GameSystem gameSystem;
+    private final Consumer<Void> backToMenu;
 
-    public GameWindow() {
+    public GameWindow(Consumer<Void> backToMenu) {
         super();
+        this.backToMenu = backToMenu;
         setMinSize(new Vector2(1200, 500));
         gameSystem = new GameSystem(entitySystem, levelSystem);
         levelSystem.loadLevel(1);
@@ -48,10 +52,11 @@ public class GameWindow extends Window {
     }
 
     private void initBoard() {
-        addEntity(new Board(), new BoardCenter(), new Timer(), new MoveCounter());
+        addEntity(new Board(), new BoardCenter(), new Timer(), new MoveCounter(), new BackToMenuButton(backToMenu));
     }
 
     private void initRobots() {
+        entitySystem.removeMany(Robot.class);
         Random random = new Random();
         Bounds center = new Bounds(7, 7, 2, 2);
         for (int i = 0; i < 4; i++) {
@@ -67,6 +72,7 @@ public class GameWindow extends Window {
     }
 
     private void initGoals() {
+        entitySystem.removeMany(Card.class);
         ArrayList<Card> cards = new ArrayList<>();
         Random random = new Random();
         List<Vector2> positions = levelSystem.getCardPositions();
@@ -90,6 +96,8 @@ public class GameWindow extends Window {
     }
 
     public void drawCard() {
+        initGoals();
+        initRobots();
         entitySystem.remove(PickedCard.class);
         Random random = new Random();
         PickedCard card = new PickedCard(CardType.values()[random.nextInt(4)], RobotColor.values()[random.nextInt(4)]);
@@ -139,6 +147,8 @@ public class GameWindow extends Window {
             entitySystem.find(MoveCounter.class).orElseThrow().reset();
             entitySystem.remove(pickedCard);
             entitySystem.find(ResetPositionButton.class).orElseThrow().onClick(Vector2.zero());
+            initGoals();
+            initRobots();
         } else {
             entitySystem.find(MoveCounter.class).orElseThrow().tick();
             // Show future moves
