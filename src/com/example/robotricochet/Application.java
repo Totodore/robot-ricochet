@@ -1,5 +1,6 @@
 package com.example.robotricochet;
 
+import com.example.robotricochet.systems.ResourceSystem;
 import com.example.robotricochet.windows.GameWindow;
 import com.example.robotricochet.windows.MenuWindow;
 import com.example.robotricochet.windows.Window;
@@ -17,6 +18,7 @@ public class Application extends JFrame {
     public static final float REFRESH_RATE = 60f;
 
     private static final Logger logger = Logger.getLogger(Application.class.getName());
+    private final ResourceSystem resourceSystem = new ResourceSystem();
     private Window window;
 
     public static void main(String[] args) {
@@ -27,7 +29,8 @@ public class Application extends JFrame {
         app.setResizable(true);
         app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         app.setBackground(Color.BLACK);
-        app.playMusic();
+
+        app.setIconImage(app.resourceSystem.getImageAsset("robots/yellow-robot.png"));
         // Fullscreen in release mode
         if (System.getenv("ENVIRONMENT") == null || System.getenv("ENVIRONMENT").startsWith("prod")) {
             app.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -43,6 +46,8 @@ public class Application extends JFrame {
         app.window.init();
         app.window.setVisible(true);
         app.add(app.window);
+        app.playMusic();
+        System.out.println("Music started");
 
         logger.info("Starting game");
     }
