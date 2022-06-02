@@ -10,6 +10,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.JFrame;
 import java.awt.Color;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -39,47 +41,48 @@ public class Application extends JFrame {
 
         app.setVisible(true);
         app.setLocationRelativeTo(null);
-        showMenu(app);
+        app.playMusic();
+        app.showMenu();
         // Window entity configuration
         app.window.setSize(app.getWidth(), app.getHeight());
         app.window.setPreferredSize(app.window.getSize());
         app.window.init();
         app.window.setVisible(true);
         app.add(app.window);
-        app.playMusic();
         System.out.println("Music started");
 
         logger.info("Starting game");
     }
 
-    public static void showGame(Application app) {
-        if (app.window != null)
-            app.remove(app.window);
-        app.window = new GameWindow((Void) -> showMenu(app));
-        app.window.setSize(app.getWidth(), app.getHeight());
-        app.window.setPreferredSize(app.window.getSize());
-        app.window.init();
-        app.window.setVisible(true);
-        app.add(app.window);
+    public void showGame() {
+        if (window != null)
+            remove(window);
+        window = new GameWindow((Void) -> showMenu());
+        window.setSize(getWidth(), getHeight());
+        window.setPreferredSize(window.getSize());
+        window.init();
+        window.setVisible(true);
+        add(window);
     }
 
-    public static void showMenu(Application app) {
-        if (app.window != null)
-            app.remove(app.window);
-        app.window = new MenuWindow((Void) -> showGame(app));
-        app.window.setSize(app.getWidth(), app.getHeight());
-        app.window.setPreferredSize(app.window.getSize());
-        app.window.init();
-        app.window.setVisible(true);
-        app.add(app.window);
+    public void showMenu() {
+        if (window != null)
+            remove(window);
+        window = new MenuWindow((Void) -> showGame());
+        window.setSize(getWidth(), getHeight());
+        window.setPreferredSize(window.getSize());
+        window.init();
+        window.setVisible(true);
+        add(window);
     }
 
     public void playMusic() {
         try {
             Clip clip = AudioSystem.getClip();
-            AudioInputStream inputStream = AudioSystem.getAudioInputStream(
-                    Objects.requireNonNull(getClass().getResourceAsStream("/sounds/bossa.wav")));
-            clip.open(inputStream);
+            InputStream audioSrc = Objects.requireNonNull(getClass().getResourceAsStream("/sounds/bossa.wav"));
+            InputStream bufferedIn = new BufferedInputStream(audioSrc);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
+            clip.open(audioStream);
             clip.loop(Clip.LOOP_CONTINUOUSLY);
             clip.start();
         } catch (Exception e) {
